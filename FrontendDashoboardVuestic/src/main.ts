@@ -2,14 +2,17 @@ import { createApp } from 'vue'
 import i18n from './i18n'
 import { createVuestic } from 'vuestic-ui'
 import { createGtm } from '@gtm-support/vue-gtm'
-
+import './axios'
+import { createPinia } from 'pinia'
 import stores from './stores'
 import router from './router'
 import vuesticGlobalConfig from './services/vuestic-ui/global-config'
 import App from './App.vue'
 
+const pinia = createPinia();
 const app = createApp(App)
 
+app.use(pinia)
 app.use(stores)
 app.use(router)
 app.use(i18n)
