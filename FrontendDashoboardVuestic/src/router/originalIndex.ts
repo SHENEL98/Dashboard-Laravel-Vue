@@ -6,10 +6,10 @@ import AppLayout from '../layouts/AppLayout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  /*{
+  {
     path: '/:pathMatch(.*)*',
     redirect: { name: 'dashboard' },
-  },*/
+  },
   {
     name: 'admin',
     path: '/',
@@ -40,11 +40,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'projects',
         path: 'projects',
         component: () => import('../pages/projects/ProjectsPage.vue'),
-      },
-      {
-        name: 'books',
-        path: 'books',
-        component: () => import('../pages/books/BooksPage.vue'),
       },
       {
         name: 'payments',
@@ -99,9 +94,12 @@ const routes: Array<RouteRecordRaw> = [
         path: 'recover-password-email',
         component: () => import('../pages/auth/CheckTheEmail.vue'),
       },
-    ]
+      {
+        path: '',
+        redirect: { name: 'login' },
+      },
+    ],
   },
-
   {
     name: '404',
     path: '/404',
@@ -110,19 +108,20 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    // For some reason using documentation example doesn't scroll on page navigation.
+    if (to.hash) {
+      return { el: to.hash, behavior: 'smooth' }
+    } else {
+      window.scrollTo(0, 0)
+    }
+  },
   routes,
 })
 
-/*router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) {
-    next({ name: 'login' })
-    // }else if(store.state.user.token && (to.name === 'Login' || to.name === 'Register')){
-  } else if (to.meta.isGuest) {
-    next({ name: 'dashboard' })
-  } else {
-    next()
-  }
-}) */
 
 export default router

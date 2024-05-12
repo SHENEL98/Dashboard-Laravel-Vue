@@ -7,10 +7,20 @@ import YearlyBreakup from './cards/YearlyBreakup.vue'
 import MonthlyEarnings from './cards/MonthlyEarnings.vue'
 import RegionRevenue from './cards/RegionRevenue.vue'
 import Timeline from './cards/Timeline.vue'
+
+import { ref, onMounted} from 'vue'
+import axios from 'axios';
+
+const user = ref();
+onMounted(async () => {
+  const data = await axios.get('/api/user');
+  user.value = data.data;
+})
 </script>
 
 <template>
   <h1 class="page-title font-bold">Dashboard</h1>
+  <h3>Yolo : {{ user?.name }}</h3>
   <section class="flex flex-col gap-4">
     <div class="flex flex-col sm:flex-row gap-4">
       <RevenueUpdates class="w-full sm:w-[70%]" />

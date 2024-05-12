@@ -1,10 +1,6 @@
 <template>
   <VaForm ref="form" @submit.prevent="submit">
     <h1 class="font-semibold text-4xl mb-4">Log in</h1>
-    <p class="text-base mb-4 leading-5">
-      New to Vuestic?
-      <RouterLink :to="{ name: 'signup' }" class="font-semibold text-primary">Sign up</RouterLink>
-    </p>
     <VaInput
       v-model="formData.email"
       :rules="[validators.required, validators.email]"
@@ -50,20 +46,37 @@ import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
 
+import { ref } from 'vue'
+import axios from 'axios'
+
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
 
-const formData = reactive({
+const router = useRouter();
+const formData = ref({
   email: '',
   password: '',
   keepLoggedIn: false,
 })
 
-const submit = () => {
+const getToken = async() => {
+  await axios.get("/sanctum/csrf-cookie");
+};
+
+const submit = async() => {
+  await getToken();
+  await axios.post('/login',{
+    email: formData.value.email,
+    password: formData.value.password
+  });
+  router.push("/");
+};
+/*const submit = () => {
+  console.log(formData.email)
   if (validate()) {
     init({ message: "You've successfully logged in", color: 'success' })
     push({ name: 'dashboard' })
   }
-}
+}*/
 </script>

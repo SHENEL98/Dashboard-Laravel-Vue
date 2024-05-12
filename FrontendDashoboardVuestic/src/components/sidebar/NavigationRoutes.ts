@@ -33,6 +33,13 @@ export default {
       },
     },
     {
+      name: 'books',
+      displayName: 'menu.books',
+      meta: {
+        icon: 'book',
+      },
+    }, 
+    {
       name: 'payments',
       displayName: 'menu.payments',
       meta: {
