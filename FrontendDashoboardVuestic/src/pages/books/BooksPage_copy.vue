@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref , onMounted } from 'vue'
+import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useBooks } from './composables/useBooks'
 import BookCards from './widgets/BookCards.vue'
@@ -7,7 +7,6 @@ import BookTable from './widgets/BooksTable.vue'
 import EditBookForm from './widgets/EditBookForm.vue'
 import { Book } from './types'
 import { useModal, useToast } from 'vuestic-ui'
-import axios from "axios" 
 
 const doShowAsCards = useLocalStorage('books-view', true)
 
@@ -83,20 +82,6 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
     hide()
   }
 }
-
-const allBooks = ref([])
-const getAllBooks = async() => {
-  try {
-    const response = await axios.get("api/books");
-    console.log("books : "+ JSON.stringify(response))
-    allBooks.value = response.data.data;
-  } catch (error) {
-    console.error("Error fetching books:", error);
-  }
-}
-
-onMounted(getAllBooks);
-
 </script>
 
 <template>
