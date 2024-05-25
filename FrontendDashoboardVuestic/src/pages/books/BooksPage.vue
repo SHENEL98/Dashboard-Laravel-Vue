@@ -17,22 +17,11 @@
         </div>
         <VaButton icon="add" @click="createNewBook">Book</VaButton>
       </div>
-
-      <VaCardContent>
-        <div>
-          <h1>yolo</h1>
-          <h2>{{ allBooks }}</h2>
-          <ul>
-            <li v-for="book in allBooks" :key="book.id">
-              {{ book.name }}
-            </li>
-          </ul>
-        </div>
-      </VaCardContent>
       <ApiBookTable
         :books="allBooks"
-        :loading="isLoading">
-
+        :loading="isLoading"
+        @edit="edit_Book"
+        >
       </ApiBookTable>
       <BookCards
         v-if="doShowAsCards"
@@ -78,6 +67,25 @@
         "
       />
     </VaModal>
+    <VaModal
+      v-slot="{ cancel, ok }"
+      v-model="doShowBook_FormModal"
+      size="small"
+      mobile-fullscreen
+      close-button
+      stateful
+      hide-default-actions
+      :before-cancel="before_EditFormModalClose"
+    >
+      <h1 v-if="book_ToEdit === null" class="va-h5 mb-4">Add book</h1>
+      <h1 v-else class="va-h5 mb-4">Edit book</h1>
+      <ApiEditBookForm
+        ref="edit_FormRef"
+        :book="book_ToEdit"
+        :save-button-label="book_ToEdit === null ? 'Add' : 'Save'"
+        @close="cancel"
+      />
+    </VaModal>
   </VaCard>
 </template>
 <script setup lang="ts">
@@ -89,6 +97,7 @@ import BookTable from './widgets/BooksTable.vue'
 import ApiBookTable from './widgets/ApiBooksTable.vue'
 
 import EditBookForm from './widgets/EditBookForm.vue'
+import ApiEditBookForm from './widgets/ApiEditBookForm.vue'
 import { Book } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import axios from "axios" 
@@ -105,6 +114,13 @@ const editBook = (book: Book) => {
   doShowBookFormModal.value = true
 }
 
+const book_ToEdit = ref<Book | null>(null)
+const doShowBook_FormModal = ref(false)
+
+const edit_Book = (book: Book) => {
+  book_ToEdit.value = book
+  doShowBook_FormModal.value =true 
+}
 const createNewBook = () => {
   bookToEdit.value = null
   doShowBookFormModal.value = true
@@ -155,6 +171,23 @@ const editFormRef = ref()
 
 const beforeEditFormModalClose = async (hide: () => unknown) => {
   if (editFormRef.value.isFormHasUnsavedChanges) {
+    const agreed = await confirm({
+      maxWidth: '380px',
+      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      size: 'small',
+    })
+    if (agreed) {
+      hide()
+    }
+  } else {
+    hide()
+  }
+}
+
+const edit_FormRef = ref()
+
+const before_EditFormModalClose = async (hide: () => unknown) => {
+  if (edit_FormRef.value.isForm_HasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',
       message: 'Form has unsaved changes. Are you sure you want to close it?',

@@ -95,7 +95,7 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
         <BookStatusBadge :status="book.status" />
       </template> -->
 
-      <!-- <template #cell(actions)="{ rowData: book }">
+      <template #cell(actions)="{ rowData: book }">
         <div class="flex gap-2 justify-end">
           <VaButton
             preset="primary"
@@ -114,7 +114,7 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
             @click="$emit('delete', book as Book)"
           />
         </div>
-      </template> -->
+      </template>
     </VaDataTable>
   </div>
 </template>
