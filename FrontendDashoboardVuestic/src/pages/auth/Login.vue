@@ -45,6 +45,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
+import { userAuthStore } from "../../stores/auth"
 
 import { ref } from 'vue'
 import axios from 'axios'
@@ -54,23 +55,22 @@ const { push } = useRouter()
 const { init } = useToast()
 
 const router = useRouter();
+const authStore = userAuthStore();
 const formData = ref({
   email: '',
   password: '',
   keepLoggedIn: false,
 })
 
-const getToken = async() => {
-  await axios.get("/sanctum/csrf-cookie");
-};
-
 const submit = async() => {
-  await getToken();
-  await axios.post('/login',{
-    email: formData.value.email,
-    password: formData.value.password
-  });
-  router.push("/");
+  try {
+    await authStore.handleLogin(formData.value)
+    router.push('/')
+  } catch (error) {
+    // handle errors
+    console.error("Login error: ", error)
+  }
+
 };
 /*const submit = () => {
   console.log(formData.email)

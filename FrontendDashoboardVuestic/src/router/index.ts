@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { userAuthStore } from '../stores/auth.js'
 
 import AuthLayout from '../layouts/AuthLayout.vue'
 import AppLayout from '../layouts/AppLayout.vue'
@@ -6,14 +7,11 @@ import AppLayout from '../layouts/AppLayout.vue'
 import RouteViewComponent from '../layouts/RouterBypass.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  /*{
-    path: '/:pathMatch(.*)*',
-    redirect: { name: 'dashboard' },
-  },*/
   {
     name: 'admin',
     path: '/',
     component: AppLayout,
+    meta: { requireAuth: true },
     redirect: { name: 'dashboard' },
     children: [
       {
@@ -76,8 +74,9 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/auth',
+    path: '/',
     component: AuthLayout,
+    meta: { isGuest: true },
     children: [
       {
         name: 'login',
@@ -107,6 +106,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/404',
     component: () => import('../pages/404.vue'),
   },
+  {
+    path: '/:catchAll(.*)',
+    redirect: { name: '404' }
+  },
 ]
 
 const router = createRouter({
@@ -114,15 +117,26 @@ const router = createRouter({
   routes,
 })
 
-/*router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const authStore = userAuthStore()
+
   if (to.meta.requireAuth) {
-    next({ name: 'login' })
-    // }else if(store.state.user.token && (to.name === 'Login' || to.name === 'Register')){
-  } else if (to.meta.isGuest) {
+    if (!authStore.authUser) {
+      try {
+        await authStore.getUser()
+        next()
+      } catch {
+        next({ name: 'login' })
+      }
+    } else {
+      next()
+    }
+  } else if (to.meta.isGuest && authStore.authUser) {
     next({ name: 'dashboard' })
   } else {
     next()
   }
-}) */
+})
+
 
 export default router
