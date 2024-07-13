@@ -11,4 +11,12 @@
 - refresh seeder : php artisan migrate:fresh --seed
 - 
 
+Laravel permission by Spatie in Vue
 
+- install : composer require spatie/laravel-permission
+- config file and migration
+    php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+    php artisan config:clear
+    php artisan migrate
+- add the package's trait to User model
+    ..  use HasRoles;
