@@ -17,21 +17,22 @@
         </div>
         <VaButton icon="add" @click="createNewBook">Book</VaButton>
       </div>
-      <ApiBookTable
-        :books="allBooks"
-        :loading="isLoading"
-        @edit="edit_Book"
-        >
-      </ApiBookTable>
       <BookCards
         v-if="doShowAsCards"
         :books="books"
+        :apiBookData="allBooks"
         :loading="isLoading"
         @edit="editBook"
         @delete="onBookDeleted"
       />
-      <BookTable
-        v-else
+      <section v-else>
+        <ApiBookTable
+          :books="allBooks"
+          :loading="isLoading"
+          @edit="edit_Book"
+          >
+        </ApiBookTable>
+        <BookTable
         v-model:sort-by="sorting.sortBy"
         v-model:sorting-order="sorting.sortingOrder"
         v-model:pagination="pagination"
@@ -40,6 +41,8 @@
         @edit="editBook"
         @delete="onBookDeleted"
       />
+      </section>
+    
     </VaCardContent>
 
     <VaModal

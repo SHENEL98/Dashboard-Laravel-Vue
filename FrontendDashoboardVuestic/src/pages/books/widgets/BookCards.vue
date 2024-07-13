@@ -2,17 +2,18 @@
 import { PropType } from 'vue'
 import { Book } from '../types'
 import BookStatusBadge from '../components/BookStatusBadge.vue'
+import { defineProps, defineEmits } from 'vue'
 
-defineProps({
-  books: {
-    type: Array as PropType<Book[]>,
-    required: true,
-  },
-  loading: {
-    type: Boolean,
-    required: true,
-  },
-})
+// Define the props that the component will receive
+const props = defineProps<{
+  apiBookData: [],
+  books: Book[],
+  loading: boolean
+}>()
+
+// Access the props
+const apiBooks = props.apiBookData;
+console.log("apiBook:"+ JSON.stringify(apiBooks))
 
 defineEmits<{
   (event: 'edit', book: Book): void

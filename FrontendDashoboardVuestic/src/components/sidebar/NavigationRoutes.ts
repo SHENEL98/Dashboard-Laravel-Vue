@@ -43,7 +43,7 @@ export default {
       name: 'roles',
       displayName: 'menu.roles',
       meta: {
-        icon: 'book',
+        icon: 'supervised_user_circle',
       },
     }, 
     {
