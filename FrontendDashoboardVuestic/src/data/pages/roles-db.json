@@ -1,0 +1,162 @@
+[
+  {
+    "id": 0,
+    "role_name": "Vuestic",
+    "role_owner": 13,
+    "team": [13, 5, 28, 14, 17, 28, 23, 11, 16, 19, 12, 28, 11],
+    "status": "in progress",
+    "creation_date": "20 Nov 2023"
+  },
+  {
+    "id": 1,
+    "role_name": "Mood board",
+    "role_owner": 28,
+    "team": [28, 10, 12, 28, 14, 27, 5, 4, 8, 23, 19, 18, 24, 11, 18, 12, 28],
+    "status": "important",
+    "creation_date": "16 Oct 2023"
+  },
+  {
+    "id": 2,
+    "role_name": "Jenkins",
+    "role_owner": 3,
+    "team": [3, 21, 7, 19, 4, 4, 7, 24],
+    "status": "important",
+    "creation_date": "1 Oct 2023"
+  },
+  {
+    "id": 3,
+    "role_name": "Springfield media",
+    "role_owner": 17,
+    "team": [17, 25, 21, 9, 18, 12, 15, 0, 7, 2, 7],
+    "status": "important",
+    "creation_date": "19 Sept 2023"
+  },
+  {
+    "id": 4,
+    "role_name": "Galileo",
+    "role_owner": 7,
+    "team": [7, 1, 28, 19, 3],
+    "status": "completed",
+    "creation_date": "23 Sept 2023"
+  },
+  {
+    "id": 5,
+    "role_name": "Website redesign",
+    "role_owner": 24,
+    "team": [24, 19, 1, 8, 9],
+    "status": "completed",
+    "creation_date": "9 Sept 2023"
+  },
+  {
+    "id": 6,
+    "role_name": "Toolset landing",
+    "role_owner": 15,
+    "team": [15, 16, 8, 6, 11, 21, 3, 20],
+    "status": "archived",
+    "creation_date": "17 Aug 2023"
+  },
+  {
+    "id": 7,
+    "role_name": "Complete product redesign",
+    "role_owner": 25,
+    "team": [25, 18, 24, 13, 5, 3, 4, 16, 25, 12, 18, 9, 22],
+    "status": "completed",
+    "creation_date": "11 Aug 2023"
+  },
+  {
+    "id": 8,
+    "role_name": "Design team role",
+    "role_owner": 17,
+    "team": [17, 6, 21, 17, 7, 6, 14, 13, 27, 7, 20],
+    "status": "archived",
+    "creation_date": "9 Aug 2023"
+  },
+  {
+    "id": 9,
+    "role_name": "Regular logistics",
+    "role_owner": 3,
+    "team": [3, 26, 8, 15, 21, 23, 18, 11, 22, 6, 20, 9],
+    "status": "archived",
+    "creation_date": "2 Aug 2023"
+  },
+  {
+    "id": 10,
+    "role_name": "Aurora Analytics",
+    "role_owner": 12,
+    "team": [12, 7, 18, 24, 13, 5],
+    "status": "in progress",
+    "creation_date": "10 Dec 2023"
+  },
+  {
+    "id": 11,
+    "role_name": "Quantum Leap",
+    "role_owner": 14,
+    "team": [14, 17, 3, 21, 11, 20],
+    "status": "planning",
+    "creation_date": "22 Nov 2023"
+  },
+  {
+    "id": 12,
+    "role_name": "Deep Dive Research",
+    "role_owner": 8,
+    "team": [8, 15, 9, 3, 27, 6],
+    "status": "important",
+    "creation_date": "15 Nov 2023"
+  },
+  {
+    "id": 13,
+    "role_name": "Sky High Architecture",
+    "role_owner": 21,
+    "team": [21, 2, 17, 18, 4],
+    "status": "completed",
+    "creation_date": "1 Nov 2023"
+  },
+  {
+    "id": 14,
+    "role_name": "Tech Horizon",
+    "role_owner": 9,
+    "team": [9, 19, 24, 1, 22],
+    "status": "in progress",
+    "creation_date": "28 Oct 2023"
+  },
+  {
+    "id": 15,
+    "role_name": "Edge of Innovation",
+    "role_owner": 16,
+    "team": [16, 11, 5, 14, 23],
+    "status": "planning",
+    "creation_date": "21 Oct 2023"
+  },
+  {
+    "id": 16,
+    "role_name": "Crypto Ventures",
+    "role_owner": 20,
+    "team": [20, 7, 15, 26, 12],
+    "status": "important",
+    "creation_date": "10 Oct 2023"
+  },
+  {
+    "id": 17,
+    "role_name": "Blockchain Basics",
+    "role_owner": 4,
+    "team": [4, 8, 3, 22, 27],
+    "status": "archived",
+    "creation_date": "5 Oct 2023"
+  },
+  {
+    "id": 18,
+    "role_name": "Virtual Reality Exploration",
+    "role_owner": 26,
+    "team": [26, 2, 14, 20, 9],
+    "status": "in progress",
+    "creation_date": "29 Sept 2023"
+  },
+  {
+    "id": 19,
+    "role_name": "AI in Daily Life",
+    "role_owner": 2,
+    "team": [2, 13, 24, 5, 11],
+    "status": "completed",
+    "creation_date": "22 Sept 2023"
+  }
+]

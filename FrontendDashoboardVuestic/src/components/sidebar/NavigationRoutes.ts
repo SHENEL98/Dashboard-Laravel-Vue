@@ -40,6 +40,13 @@ export default {
       },
     }, 
     {
+      name: 'roles',
+      displayName: 'menu.roles',
+      meta: {
+        icon: 'book',
+      },
+    }, 
+    {
       name: 'payments',
       displayName: 'menu.payments',
       meta: {

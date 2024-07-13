@@ -55,8 +55,8 @@
     "faq": "FAQ",
     "users": "Users",
     "projects": "Projects",
-    "books": "Books"
-
+    "books": "Books",
+    "roles": "Roles",
   },
   "messages": {
     "all": "See all messages",
