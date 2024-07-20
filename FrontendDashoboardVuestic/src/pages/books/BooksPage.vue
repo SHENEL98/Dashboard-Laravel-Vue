@@ -17,14 +17,20 @@
         </div>
         <VaButton icon="add" @click="createNewBook">Book</VaButton>
       </div>
-      <BookCards
-        v-if="doShowAsCards"
-        :books="books"
-        :apiBookData="allBooks"
-        :loading="isLoading"
-        @edit="editBook"
-        @delete="onBookDeleted"
-      />
+      <section v-if="doShowAsCards">
+        <ApiBookCards
+          :books="allBooks"
+          :loading="isLoading"
+          @edit="edit_Book">
+        </ApiBookCards>
+        <BookCards
+          :books="books"
+          :apiBookData="allBooks"
+          :loading="isLoading"
+          @edit="editBook"
+          @delete="onBookDeleted">
+        </BookCards>
+      </section>
       <section v-else>
         <ApiBookTable
           :books="allBooks"
@@ -98,7 +104,7 @@ import { useBooks } from './composables/useBooks'
 import BookCards from './widgets/BookCards.vue'
 import BookTable from './widgets/BooksTable.vue'
 import ApiBookTable from './widgets/ApiBooksTable.vue'
-
+import ApiBookCards from './widgets/ApiBookCards.vue'
 import EditBookForm from './widgets/EditBookForm.vue'
 import ApiEditBookForm from './widgets/ApiEditBookForm.vue'
 import { Book } from './types'
