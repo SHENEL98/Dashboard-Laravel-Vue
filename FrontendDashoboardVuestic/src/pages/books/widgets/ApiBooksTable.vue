@@ -78,22 +78,7 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
         <div class="flex items-center gap-2 ellipsis max-w-[230px]">
           {{ rowData.categories }}
         </div>
-        <!--<VaAvatarGroup
-          size="small"
-          :options="
-            (book as Book).team.map((user) => ({
-              label: user.fullname,
-              src: user.avatar,
-              fallbackText: user.fullname[0],
-              color: avatarColor(user.fullname),
-            }))
-          "
-          :max="5"
-        />-->
       </template>
-      <!-- <template #cell(status)="{ rowData: book }">
-        <BookStatusBadge :status="book.status" />
-      </template> -->
 
       <template #cell(actions)="{ rowData: book }">
         <div class="flex gap-2 justify-end">
@@ -103,7 +88,7 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
             color="primary"
             icon="mso-edit"
             aria-label="Edit book"
-            @click="$emit('edit', book as Book)"
+            @click="$emit('edit', book )"
           />
           <VaButton
             preset="primary"

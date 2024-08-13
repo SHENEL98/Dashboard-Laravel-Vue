@@ -119,13 +119,15 @@ const doShowBookFormModal = ref(false)
 const doShowBook_FormModal = ref(false)
 
 const editBook = (book: Book) => {
+  console.log("editbook :"+book)
   bookToEdit.value = book
   doShowBookFormModal.value = true
 }
 
 const book_ToEdit = ref<Book | null>(null)
 
-const edit_Book = (book: Book) => {
+const edit_Book = (book ) => {
+  console.log("edit_book :"+JSON.stringify(book))
   book_ToEdit.value = book
   doShowBook_FormModal.value =true 
 }
