@@ -1,6 +1,5 @@
 <template>
   <h1 class="page-title">Books</h1>
-
   <VaCard>
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
@@ -117,6 +116,7 @@ const { books, update, add, isLoading, remove, pagination, sorting } = useBooks(
 
 const bookToEdit = ref<Book | null>(null)
 const doShowBookFormModal = ref(false)
+const doShowBook_FormModal = ref(false)
 
 const editBook = (book: Book) => {
   bookToEdit.value = book
@@ -124,7 +124,6 @@ const editBook = (book: Book) => {
 }
 
 const book_ToEdit = ref<Book | null>(null)
-const doShowBook_FormModal = ref(false)
 
 const edit_Book = (book: Book) => {
   book_ToEdit.value = book

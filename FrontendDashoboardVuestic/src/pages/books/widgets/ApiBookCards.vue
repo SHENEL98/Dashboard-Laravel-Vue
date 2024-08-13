@@ -21,7 +21,7 @@ const props = defineProps({
 // Access the props
 const apiBooks = computed(() => props.books);
 
-defineEmits<{
+const emit = defineEmits<{
   (event: 'edit', book: Book): void
   (event: 'delete', book: Book): void
 }>()
@@ -57,23 +57,11 @@ const avatarColor = (userName: string) => {
             <span class="text-[var(--va-secondary)]">Owner: </span>
             <span>{{ book.book_owner }}</span>
           </p>
-         <!-- <VaAvatarGroup
-            class="my-4"
-            :options="
-              book.team.map((user) => ({
-                label: user.fullname,
-                src: user.avatar,
-                fallbackText: user.fullname[0],
-                color: avatarColor(user.fullname),
-              }))
-            "
-            :max="5"
-          />-->
           <BookStatusBadge :status="book.status" />
         </div>
         <VaDivider class="my-6" />
         <div class="flex justify-between">
-          <VaButton preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', book)" />
+          <VaButton preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', book as Book)" />
           <VaButton preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', book)" />
         </div>
       </VaCardContent>
