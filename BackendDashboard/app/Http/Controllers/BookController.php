@@ -38,7 +38,8 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+       dd("book :",$book);
+
     }
 
     /**
@@ -46,7 +47,8 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        dd("request edit :",$book);
+
     }
 
     /**
@@ -54,7 +56,7 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+        dd("request update :",$request);
     }
 
     /**
@@ -62,6 +64,7 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return response()->json("book deleted");
     }
 }

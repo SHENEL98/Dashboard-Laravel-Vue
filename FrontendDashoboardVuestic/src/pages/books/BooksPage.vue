@@ -14,13 +14,15 @@
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewBook">Book</VaButton>
+        <VaButton icon="add" @click="createNewBook">Add Book</VaButton>
       </div>
       <section v-if="doShowAsCards">
         <ApiBookCards
           :books="allBooks"
           :loading="isLoading"
-          @edit="edit_Book">
+          @edit="edit_Book"
+          @delete="on_BookDeleted"
+        >
         </ApiBookCards>
         <BookCards
           :books="books"
@@ -35,6 +37,8 @@
           :books="allBooks"
           :loading="isLoading"
           @edit="edit_Book"
+          @delete="on_BookDeleted"
+
           >
         </ApiBookTable>
         <BookTable
@@ -85,13 +89,19 @@
       hide-default-actions
       :before-cancel="before_EditFormModalClose"
     >
-      <h1 v-if="book_ToEdit === null" class="va-h5 mb-4">Add book</h1>
+      <h1 v-if="book_ToEdit === null" class="va-h5 mb-4">Add Book</h1>
       <h1 v-else class="va-h5 mb-4">Edit book</h1>
       <ApiEditBookForm
         ref="edit_FormRef"
         :book="book_ToEdit"
         :save-button-label="book_ToEdit === null ? 'Add' : 'Save'"
         @close="cancel"
+        @save="
+          (book) => {
+            on_BookSaved(book)
+            ok()
+          }
+        "
       />
     </VaModal>
   </VaCard>
@@ -119,7 +129,6 @@ const doShowBookFormModal = ref(false)
 const doShowBook_FormModal = ref(false)
 
 const editBook = (book: Book) => {
-  console.log("editbook :"+book)
   bookToEdit.value = book
   doShowBookFormModal.value = true
 }
@@ -127,13 +136,12 @@ const editBook = (book: Book) => {
 const book_ToEdit = ref<Book | null>(null)
 
 const edit_Book = (book ) => {
-  console.log("edit_book :"+JSON.stringify(book))
   book_ToEdit.value = book
   doShowBook_FormModal.value =true 
 }
 const createNewBook = () => {
-  bookToEdit.value = null
-  doShowBookFormModal.value = true
+  book_ToEdit.value = null
+  doShowBook_FormModal.value = true
 }
 
 const { init: notify } = useToast()
@@ -155,12 +163,61 @@ const onBookSaved = async (book: Book) => {
   }
 }
 
+const on_BookSaved = async(book : Book)=>{
+        try{
+            console.log("up book :"+ book)
+            await axios.patch("api/v1/books/"+book.id, book);
+            //await router.push({name: 'SkillsIndex'});
+
+        }catch(error){
+          console.log("up error :"+ error)
+
+        }
+    }
+
+/*const on_BookSaved = async (book: Book) => {
+  doShowBook_FormModal.value = false
+  if ('id' in book) {
+    await update(book as Book)
+    notify({
+      message: 'Book updated',
+      color: 'success',
+    })
+  } else {
+    await add(book as Book)
+    notify({
+      message: 'Book created',
+      color: 'success',
+    })
+  }
+} */
+
 const { confirm } = useModal()
 
 const onBookDeleted = async (book: Book) => {
   const response = await confirm({
     title: 'Delete book',
     message: `Are you sure you want to delete book "${book.book_name}"?`,
+    okText: 'Delete',
+    size: 'small',
+    maxWidth: '380px',
+  })
+
+  if (!response) {
+    return
+  }
+
+  await remove(book)
+  notify({
+    message: 'Book deleted',
+    color: 'success',
+  })
+}
+
+const on_BookDeleted = async (book: Book) => {
+  const response = await confirm({
+    title: 'Delete book',
+    message: `Are you sure you want to delete book "${book.name}"?`,
     okText: 'Delete',
     size: 'small',
     maxWidth: '380px',
@@ -214,8 +271,7 @@ const before_EditFormModalClose = async (hide: () => unknown) => {
 const allBooks = ref([]);
 const getAllBooks = async () => {
   try {
-    const response = await axios.get('api/books');
-    console.log("books:", response.data); // Adjusted to reflect the correct response structure
+    const response = await axios.get('api/v1/books');
     allBooks.value = response.data; // Assuming response.data is the array of books
   } catch (error) {
     console.error('Error fetching books:', error);

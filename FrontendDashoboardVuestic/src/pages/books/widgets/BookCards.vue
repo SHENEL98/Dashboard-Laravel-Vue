@@ -13,7 +13,6 @@ const props = defineProps<{
 
 // Access the props
 const apiBooks = props.apiBookData;
-console.log("apiBook:"+ JSON.stringify(apiBooks))
 
 defineEmits<{
   (event: 'edit', book: Book): void

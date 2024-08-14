@@ -86,7 +86,7 @@ const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref(
       ]"
     >
     </VaSelect>
-    <VaInput v-model="newBook.created_date" label="Book Categories" mask="date" readonly  />
+    <VaInput v-if="newBook.created_date" v-model="newBook.created_date" label="Created on" mask="date" readonly  />
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
       <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
       <VaButton @click="validate() && $emit('save', newBook as Book)">{{ saveButtonLabel }}</VaButton>

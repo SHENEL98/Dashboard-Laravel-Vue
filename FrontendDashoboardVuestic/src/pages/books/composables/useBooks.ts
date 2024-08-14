@@ -9,6 +9,7 @@ import {
 } from '../../../data/pages/books'
 import { Book } from '../types'
 import { watchIgnorable } from '@vueuse/core'
+import axios from "axios" 
 
 const makePaginationRef = () => ref<Pagination>({ page: 1, perPage: 10, total: 0 })
 const makeSortingRef = () => ref<Sorting>({ sortBy: 'creation_date', sortingOrder: 'desc' })
@@ -58,6 +59,16 @@ export const useBooks = (options?: { sorting?: Ref<Sorting>; pagination?: Ref<Pa
 
     async update(book: Book) {
       isLoading.value = true
+      console.log("book :"+JSON.stringify(book))
+      
+      await axios.patch('api/books/'+ book.id, book)
+      await fetch()
+      isLoading.value = false
+    },
+
+    /*
+    async update(book: Book) {
+      isLoading.value = true
       await updateBook({
         ...book,
         book_owner: book.book_owner.id,
@@ -66,14 +77,11 @@ export const useBooks = (options?: { sorting?: Ref<Sorting>; pagination?: Ref<Pa
       await fetch()
       isLoading.value = false
     },
+    */
 
     async remove(book: Book) {
       isLoading.value = true
-      await removeBook({
-        ...book,
-        book_owner: book.book_owner.id,
-        team: book.team.map((user) => user.id),
-      })
+      await axios.delete("api/v1/books/"+book.id);
       await fetch()
       isLoading.value = false
     },
