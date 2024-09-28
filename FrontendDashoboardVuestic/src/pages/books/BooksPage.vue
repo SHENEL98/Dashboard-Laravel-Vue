@@ -166,7 +166,6 @@ const onBookSaved = async (book: Book) => {
 const on_BookSaved = async(book : Book)=>{
   doShowBookFormModal.value = false
   try{  
-    console.log("book : "+JSON.stringify(book));
     if(!book_ToEdit._value){
       const response = await axios.post('api/v1/books/', book);
       notify({
@@ -175,7 +174,6 @@ const on_BookSaved = async(book : Book)=>{
       })
     }else{
       const response = await axios.patch('api/v1/books/'+book.id, book);
-      console.log("response : "+JSON.stringify(response));
       notify({
         message: 'Book updated',
         color: 'success',
@@ -183,28 +181,15 @@ const on_BookSaved = async(book : Book)=>{
     }
     // After saving or updating, call getAllBooks to refresh the data
     await getAllBooks();
-    
+
   }catch(error){
+    notify({
+        message: 'Something not right',
+        color: 'danger',
+      })
     console.log("error :"+ error)    
   }
 }
-
-/*const on_BookSaved = async (book: Book) => {
-  doShowBook_FormModal.value = false
-  if ('id' in book) {
-    await update(book as Book)
-    notify({
-      message: 'Book updated',
-      color: 'success',
-    })
-  } else {
-    await add(book as Book)
-    notify({
-      message: 'Book created',
-      color: 'success',
-    })
-  }
-} */
 
 const { confirm } = useModal()
 

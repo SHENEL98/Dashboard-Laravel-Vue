@@ -52,7 +52,6 @@ class BookController extends Controller
         }catch(Exception $e){
             return $e;
         }
-
     }
 
     /**
@@ -60,8 +59,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-       dd("book :",$book);
-
+       //
     }
 
     /**
@@ -69,16 +67,34 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        dd("request edit :",$book);
-
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, $id)
     {
-        dd("request update :",$request);
+        try{
+            $request->validate([
+                'name' => 'required',
+                'book_owner' => 'required',
+                'categories' => 'required',
+                'status' => 'required',
+            ]);
+
+            $book = Book::find($id);
+            $book->name = $request->name;
+            $book->book_owner = $request->book_owner;
+            $book->categories = $request->categories;
+            $book->status = $request->status;
+            $book->save();
+
+            return response()->json("book updated");
+
+        }catch(Exception $e){
+            return $e;
+        }
     }
 
     /**
