@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,28 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $request->validate([
+                'name' => 'required',
+                'book_owner' => 'required',
+                'categories' => 'required',
+                'status' => 'required',
+                'created_by' => 'required',
+
+            ]);
+    
+            $book = Book::create(['name'=> $request->name, 
+                        'book_owner' => $request->book_owner,
+                        'categories' => $request->categories,
+                        'status' => $request->status,
+                        'created_by' => $request->created_by,
+                    ]);
+    
+            return response()->json("Successfully");
+        }catch(Exception $e){
+            return $e;
+        }
+
     }
 
     /**

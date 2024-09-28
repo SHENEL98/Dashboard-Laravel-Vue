@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { EmptyBook, Book } from '../types'
 import { SelectOption } from 'vuestic-ui'
 import { useUsers } from '../../users/composables/useUsers'
 import BookStatusBadge from '../components/BookStatusBadge.vue'
 import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import moment from "moment"
+import axios from "axios" 
+
+const user = ref(null); // Set to null initially
+
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('/api/user');
+    user.value = data;
+
+    // Now that user is loaded, set created_by for newBook if it's not already set
+    if (!newBook.value.created_by) {
+      newBook.value.created_by = user.value.id;
+    }
+  } catch (error) {
+    console.error("Error fetching user", error);
+  }
+});
 
 const props = defineProps<{
   book: Book | null
@@ -22,7 +39,7 @@ const defaultNewBook: EmptyBook = {
   book_owner: undefined,
   categories : '',
   status: undefined,
-  created_by: undefined,
+  created_by : null // Initialize as null
 }
 
 const newBook = ref({ ...defaultNewBook })
@@ -39,7 +56,6 @@ const isForm_HasUnsavedChanges = computed(() => {
   })
 })
 
-
 defineExpose({
   isForm_HasUnsavedChanges,
 })
@@ -48,19 +64,21 @@ watch(
   () => props.book,
   () => {
     if (!props.book) {
-      return
+      return;
     }
 
+    // Update newBook when props.book changes, including setting created_by
     newBook.value = {
       ...props.book,
       book_owner: props.book.book_owner,
       categories: props.book.categories,
       status: props.book.status,
-      created_date : moment(props.book.created_at).format("DD-MMM-YYYY hh:mm") 
-    }
+      created_date: moment(props.book.created_at).format("DD-MMM-YYYY hh:mm"),
+      created_by: user.value?.id || props.book.created_by, // Ensure created_by is set based on user data
+    };
   },
   { immediate: true },
-)
+);
 
 const required = (v: string | SelectOption) => !!v || 'This field is required'
 

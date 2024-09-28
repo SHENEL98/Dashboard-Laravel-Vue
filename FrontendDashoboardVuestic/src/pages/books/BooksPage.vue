@@ -164,16 +164,30 @@ const onBookSaved = async (book: Book) => {
 }
 
 const on_BookSaved = async(book : Book)=>{
-        try{
-            console.log("up book :"+ book)
-            await axios.patch("api/v1/books/"+book.id, book);
-            //await router.push({name: 'SkillsIndex'});
-
-        }catch(error){
-          console.log("up error :"+ error)
-
-        }
+  doShowBookFormModal.value = false
+  try{  
+    console.log("book : "+JSON.stringify(book));
+    if(!book_ToEdit._value){
+      const response = await axios.post('api/v1/books/', book);
+      notify({
+        message: 'Book created',
+        color: 'success',
+      })
+    }else{
+      const response = await axios.patch('api/v1/books/'+book.id, book);
+      console.log("response : "+JSON.stringify(response));
+      notify({
+        message: 'Book updated',
+        color: 'success',
+      })
     }
+    // After saving or updating, call getAllBooks to refresh the data
+    await getAllBooks();
+    
+  }catch(error){
+    console.log("error :"+ error)    
+  }
+}
 
 /*const on_BookSaved = async (book: Book) => {
   doShowBook_FormModal.value = false
