@@ -14,7 +14,7 @@
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewBook">Add Book</VaButton>
+        <VaButton color="success" icon="add" @click="createNewBook">Add Book</VaButton>
       </div>
       <section v-if="doShowAsCards">
         <ApiBookCards
@@ -24,13 +24,6 @@
           @delete="on_BookDeleted"
         >
         </ApiBookCards>
-        <BookCards
-          :books="books"
-          :apiBookData="allBooks"
-          :loading="isLoading"
-          @edit="editBook"
-          @delete="onBookDeleted">
-        </BookCards>
       </section>
       <section v-else>
         <ApiBookTable
@@ -38,18 +31,8 @@
           :loading="isLoading"
           @edit="edit_Book"
           @delete="on_BookDeleted"
-
           >
         </ApiBookTable>
-        <BookTable
-        v-model:sort-by="sorting.sortBy"
-        v-model:sorting-order="sorting.sortingOrder"
-        v-model:pagination="pagination"
-        :books="books"
-        :loading="isLoading"
-        @edit="editBook"
-        @delete="onBookDeleted"
-      />
       </section>
     
     </VaCardContent>
@@ -168,12 +151,18 @@ const on_BookSaved = async(book : Book)=>{
   try{  
     if(!book_ToEdit._value){
       const response = await axios.post('api/v1/books/', book);
+      if (!response) {
+        return
+      }
       notify({
         message: 'Book created',
         color: 'success',
       })
     }else{
       const response = await axios.patch('api/v1/books/'+book.id, book);
+      if (!response) {
+        return
+      }
       notify({
         message: 'Book updated',
         color: 'success',
@@ -184,7 +173,7 @@ const on_BookSaved = async(book : Book)=>{
 
   }catch(error){
     notify({
-        message: 'Something not right',
+        message: 'Something not right :'+ error.data,
         color: 'danger',
       })
     console.log("error :"+ error)    
@@ -231,6 +220,9 @@ const on_BookDeleted = async (book: Book) => {
     message: 'Book deleted',
     color: 'success',
   })
+
+  // After deleteing, call getAllBooks to refresh the data
+  await getAllBooks();
 }
 
 const editFormRef = ref()

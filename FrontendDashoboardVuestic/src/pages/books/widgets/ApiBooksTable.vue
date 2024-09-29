@@ -6,6 +6,7 @@ import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import BookStatusBadge from '../components/BookStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/books'
 import { useVModel } from '@vueuse/core'
+import moment from "moment";
 
 const columns = defineVaDataTableColumns([
   { label: 'Book name', key: 'name', sortable: true },
@@ -79,7 +80,14 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
           {{ rowData.categories }}
         </div>
       </template>
-
+      <template #cell(status)="{ rowData: book }">
+        <BookStatusBadge :status="book.status" />
+      </template>
+      <template #cell(created_at)="{ rowData }">
+        <div class="flex items-center gap-2 ellipsis max-w-[230px]"> 
+          {{ moment(rowData.created_at).format('DD-MMM-YYYY HH:mm') }}
+        </div>
+      </template>
       <template #cell(actions)="{ rowData: book }">
         <div class="flex gap-2 justify-end">
           <VaButton
