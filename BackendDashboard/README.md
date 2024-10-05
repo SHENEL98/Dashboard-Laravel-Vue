@@ -20,3 +20,11 @@ Laravel permission by Spatie in Vue
     php artisan migrate
 - add the package's trait to User model
     ..  use HasRoles;
+
+- update Kernel.php
+- create a role controller : php artisan make:controller RoleController -- resource
+- create a seeder : php artisan make:seeder PermissionTableSeeder 
+    set permissions in there, and seed : php artisan db:seed --class=PermissionTableSeeder
+- create a seeder : php artisan make:seeder RoleTableSeeder 
+   set roles in there, and modify user migration (add "level" colum) and seed : php artisan db:seed --class=RoleTableSeeder   
+- Update RoleController
