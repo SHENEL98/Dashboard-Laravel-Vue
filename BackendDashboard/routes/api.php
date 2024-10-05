@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\RoleController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +24,14 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 }); */
 
+/* 
+laravel artisan clear cache 
+    php artisan view:clear 
+    php artisan cache:clear
+    php artisan route:clear
+    php artisan config:clear
+*/
+
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/user',function(Request $request){
         return $request->user();
@@ -33,4 +44,6 @@ Route::middleware(['auth:sanctum'])->group(function (){
 
 Route::group(['prefix' => 'v1'], function() {
     Route::apiResource('books', BookController::class);
+    Route::apiResource('roles', RoleController::class);
+
 });

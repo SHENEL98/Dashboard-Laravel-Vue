@@ -185,7 +185,7 @@ const before_EditFormModalClose = async (hide: () => unknown) => {
 const allRoles = ref([]);
 const getAllRoles = async () => {
   try {
-    const response = await axios.get('api/roles');
+    const response = await axios.get('api/v1/roles');
     console.log("roles:", response.data); // Adjusted to reflect the correct response structure
     allRoles.value = response.data; // Assuming response.data is the array of roles
   } catch (error) {

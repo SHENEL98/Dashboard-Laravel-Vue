@@ -16,7 +16,8 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::orderBy('id','DESC')->get();
-        return $this->sendResponse($roles,'Successfully',200);
+        return $roles;
+       // return $this->sendResponse($roles,'Successfully',200);
     }
     /**
      * Show the form for creating a new resource.
