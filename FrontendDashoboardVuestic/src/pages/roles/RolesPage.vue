@@ -5,15 +5,6 @@
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
-          <VaButtonToggle
-            v-model="doShowAsCards"
-            color="background-element"
-            border-color="background-element"
-            :options="[
-              { label: 'Cards', value: true },
-              { label: 'Table', value: false },
-            ]"
-          />
         </div>
         <VaButton icon="add" @click="createNewRole">Role</VaButton>
       </div>
@@ -23,15 +14,7 @@
         @edit="edit_Role"
         >
       </ApiRoleTable>
-      <RoleCards
-        v-if="doShowAsCards"
-        :roles="roles"
-        :loading="isLoading"
-        @edit="editRole"
-        @delete="onRoleDeleted"
-      />
       <RoleTable
-        v-else
         v-model:sort-by="sorting.sortBy"
         v-model:sorting-order="sorting.sortingOrder"
         v-model:pagination="pagination"
@@ -92,7 +75,6 @@
 import { ref , onMounted } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useRoles } from './composables/useRoles'
-import RoleCards from './widgets/RoleCards.vue'
 import RoleTable from './widgets/RolesTable.vue'
 import ApiRoleTable from './widgets/ApiRolesTable.vue'
 
@@ -102,7 +84,6 @@ import { Role } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import axios from "axios" 
 
-const doShowAsCards = useLocalStorage('roles-view', true)
 
 const { roles, update, add, isLoading, remove, pagination, sorting } = useRoles()
 
