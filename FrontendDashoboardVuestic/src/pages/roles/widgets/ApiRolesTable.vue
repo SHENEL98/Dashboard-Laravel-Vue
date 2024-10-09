@@ -9,10 +9,8 @@ import { useVModel } from '@vueuse/core'
 
 const columns = defineVaDataTableColumns([
   { label: 'Role name', key: 'name', sortable: true },
-  { label: 'Role owner', key: 'role_owner', sortable: true },
-  { label: 'Category', key: 'categories', sortable: true },
-  { label: 'Status', key: 'status', sortable: true },
-  { label: 'Create By', key: 'created_by', sortable: true },
+  { label: 'Permissions', key: 'role_owner', sortable: true },
+  { label: 'Assigined to', key: 'status', sortable: true },
   { label: 'Creation Date', key: 'created_at', sortable: true },
   { label: ' ', key: 'actions' },
 ])

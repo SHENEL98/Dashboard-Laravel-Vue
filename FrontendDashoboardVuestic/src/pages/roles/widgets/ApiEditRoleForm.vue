@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onMounted } from 'vue'
 import { EmptyRole, Role } from '../types'
 import { SelectOption } from 'vuestic-ui'
 import { useUsers } from '../../users/composables/useUsers'
-import RoleStatusBadge from '../components/RoleStatusBadge.vue'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
+import axios from 'axios'
 
 const props = defineProps<{
   role: Role | null
@@ -16,10 +15,26 @@ defineEmits<{
   (event: 'close'): void
 }>()
 
+const user = ref(null); // Set to null initially
+
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('/api/user');
+    user.value = data;
+
+    // Now that user is loaded, set created_by for newBook if it's not already set
+    if (!newRole.value.created_by) {
+      newRole.value.created_by = user.value.id;
+    }
+  } catch (error) {
+    console.error("Error fetching user", error);
+  }
+});
+
 const defaultNewRole: EmptyRole = {
   name: '',
   role_owner: undefined,
-  categories : '',
+  permissions : [],
   status: undefined,
   created_by: undefined,
 }
@@ -38,10 +53,33 @@ const isForm_HasUnsavedChanges = computed(() => {
   })
 })
 
+const isPermissionSelected = (permissionId: number) => {
+  // Make sure newRole.value.permissions is always an array
+  return Array.isArray(newRole.value.permissions) && newRole.value.permissions.includes(permissionId)
+}
 
-defineExpose({
-  isForm_HasUnsavedChanges,
-})
+const togglePermission = (permissionId: number) => {
+  // Ensure permissions is an array
+  if (!Array.isArray(newRole.value.permissions)) {
+    newRole.value.permissions = [] // Initialize as an empty array if undefined
+  }
+
+  const index = newRole.value.permissions.indexOf(permissionId)
+
+  if (index > -1) {
+    // Remove the permission from the array
+    newRole.value.permissions = newRole.value.permissions.filter((id) => id !== permissionId)
+  } else {
+    // Add the new permission
+    newRole.value.permissions.push(permissionId)
+  }
+
+  // Debugging: log the permissions to ensure they are updated correctly
+  console.log('Updated Permissions:', newRole.value.permissions)
+
+  // Trigger Vue reactivity by updating the object
+  newRole.value = { ...newRole.value }
+}
 
 watch(
   () => props.role,
@@ -53,77 +91,52 @@ watch(
     newRole.value = {
       ...props.role,
       role_owner: props.role.role_owner,
-      categories: props.role.categories,
+      permissions: props.role.permissions,
       status: props.role.status,
+      created_by: user.value?.id || props.role.created_by, // Ensure created_by is set based on user data
     }
   },
   { immediate: true },
 )
+const test = () =>{
+  alert("yolo")
+}
+
+const permissions = ref<any[]>([]) // Use appropriate type for permission data
+
+onMounted(async() => {
+  listOfPermissions();
+});
+
+const listOfPermissions = async() => {
+  const response = await axios.get('/api/roles/create');
+  permissions.value = response.data;
+};
 
 const required = (v: string | SelectOption) => !!v || 'This field is required'
 
 const { users: teamUsers, filters: teamFilters } = useUsers({ pagination: ref({ page: 1, perPage: 100, total: 10 }) })
 const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref({ page: 1, perPage: 100, total: 10 }) })
+
+defineExpose({
+  isForm_HasUnsavedChanges,
+  isPermissionSelected,
+  togglePermission,
+  test
+})
 </script>
 
 <template>
   <VaForm v-slot="{ validate }" class="flex flex-col gap-2">
     <VaInput v-model="newRole.name" label="Role name" :rules="[required]" />
-    <VaSelect
-      v-model="newRole.role_owner"
-      v-model:search="ownerFilters.search"
-      searchable
-      label="Owner"
-      text-by="fullname"
-      track-by="id"
-      :rules="[required]"
-      :options="ownerUsers"
-    >
-      <template #content="{ value: user }">
-        <div v-if="user" :key="user.id" class="flex items-center gap-1 mr-4">
-          <UserAvatar :user="user" size="18px" />
-          {{ user.fullname }}
-        </div>
-      </template>
-    </VaSelect>
-    <!--<VaSelect
-      v-model="newRole.team"
-      v-model:search="teamFilters.search"
-      label="Team"
-      text-by="fullname"
-      track-by="id"
-      multiple
-      :rules="[(v: any) => ('length' in v && v.length > 0) || 'This field is required']"
-      :options="teamUsers"
-      :max-visible-options="$vaBreakpoint.mdUp ? 3 : 1"
-    >
-      <template #content="{ valueArray }">
-        <template v-if="valueArray">
-          <div v-for="(user, index) in valueArray" :key="user.id" class="flex items-center gap-1 mr-2">
-            <UserAvatar :user="user" size="18px" />
-            {{ user.fullname }}{{ index < valueArray.length - 1 ? ',' : '' }}
-          </div>
-        </template>
-      </template>
-    </VaSelect>-->
-    <VaInput v-model="newRole.categories" label="Role Categories" :rules="[required]" />
-    <VaSelect
-      v-model="newRole.status"
-      label="Status"
-      :rules="[required]"
-      track-by="value"
-      value-by="value"
-      :options="[
-        { text: 'In progress', value: 'in progress' },
-        { text: 'Archived', value: 'archived' },
-        { text: 'Completed', value: 'completed' },
-        { text: 'Important', value: 'important' },
-      ]"
-    >
-      <template #content="{ value }">
-        <RoleStatusBadge v-if="value" :status="value.value" />
-      </template>
-    </VaSelect>
+ 
+    <div class="self-stretch flex-col justify-start items-start gap-4 flex">
+      <VaListLabel>Role Permissions</VaListLabel>
+      <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permissions" :key="index">
+          <input type="checkbox" class="form-check-input" :value="itemPer.id" v-model="newRole.permissions" />
+          <label for="scales">{{itemPer.name}}</label>
+      </div>
+    </div>  
 
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">
       <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>

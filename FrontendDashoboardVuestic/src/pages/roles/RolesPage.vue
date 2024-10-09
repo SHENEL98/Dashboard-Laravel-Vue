@@ -67,13 +67,18 @@
         :role="role_ToEdit"
         :save-button-label="role_ToEdit === null ? 'Add' : 'Save'"
         @close="cancel"
+        @save="
+          (role) => {
+            on_RoleSaved(role)
+            ok()
+          }
+        "
       />
     </VaModal>
   </VaCard>
 </template>
 <script setup lang="ts">
 import { ref , onMounted } from 'vue'
-import { useLocalStorage } from '@vueuse/core'
 import { useRoles } from './composables/useRoles'
 import RoleTable from './widgets/RolesTable.vue'
 import ApiRoleTable from './widgets/ApiRolesTable.vue'
@@ -104,7 +109,7 @@ const edit_Role = (role: Role) => {
 }
 const createNewRole = () => {
   roleToEdit.value = null
-  doShowRoleFormModal.value = true
+  doShowRole_FormModal.value = true
 }
 
 const { init: notify } = useToast()
@@ -124,6 +129,11 @@ const onRoleSaved = async (role: Role) => {
       color: 'success',
     })
   }
+}
+
+const on_RoleSaved = async (role: Role) => {
+  console.log("role details :"+ JSON.stringify(role))
+
 }
 
 const { confirm } = useModal()
@@ -185,7 +195,7 @@ const before_EditFormModalClose = async (hide: () => unknown) => {
 const allRoles = ref([]);
 const getAllRoles = async () => {
   try {
-    const response = await axios.get('api/v1/roles');
+    const response = await axios.get('api/roles');
     console.log("roles:", response.data); // Adjusted to reflect the correct response structure
     allRoles.value = response.data; // Assuming response.data is the array of roles
   } catch (error) {

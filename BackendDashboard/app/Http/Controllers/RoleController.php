@@ -27,7 +27,7 @@ class RoleController extends Controller
     public function create()
     {
         $permission = Permission::get();
-        return $this->sendResponse($permission,'Successfully',200);
+        return $permission;
     }
     /**
      * Store a newly created resource in storage.
@@ -58,7 +58,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    /*public function show($id)
     {
         $role = Role::find($id);
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
@@ -66,8 +66,9 @@ class RoleController extends Controller
             ->get();
         $data['roles'] = $role;
         $data['permissions'] = $rolePermissions;
-        return $this->sendResponse($data, 'Success', 200);
-    }
+        return $data;
+       // return $this->sendResponse($data, 'Success', 200);
+    }*/
     /**
      * Show the form for editing the specified resource.
      *

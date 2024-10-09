@@ -38,12 +38,12 @@ Route::middleware(['auth:sanctum'])->group(function (){
     });
     //Route::resource('/books',BookController::class);
 
-    //Route::resource('roles',RoleController::class);
+    Route::resource('roles',RoleController::class);
 
 });
 
 Route::group(['prefix' => 'v1'], function() {
     Route::apiResource('books', BookController::class);
-    Route::apiResource('roles', RoleController::class);
+   //Route::apiResource('roles', RoleController::class);
 
 });
