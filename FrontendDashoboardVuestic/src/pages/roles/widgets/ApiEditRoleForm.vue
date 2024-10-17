@@ -34,7 +34,7 @@ onMounted(async () => {
 const defaultNewRole: EmptyRole = {
   name: '',
   role_owner: undefined,
-  permissions : [],
+  permission : [],
   status: undefined,
   created_by: undefined,
 }
@@ -54,28 +54,28 @@ const isForm_HasUnsavedChanges = computed(() => {
 })
 
 const isPermissionSelected = (permissionId: number) => {
-  // Make sure newRole.value.permissions is always an array
-  return Array.isArray(newRole.value.permissions) && newRole.value.permissions.includes(permissionId)
+  // Make sure newRole.value.permission is always an array
+  return Array.isArray(newRole.value.permission) && newRole.value.permission.includes(permissionId)
 }
 
 const togglePermission = (permissionId: number) => {
-  // Ensure permissions is an array
-  if (!Array.isArray(newRole.value.permissions)) {
-    newRole.value.permissions = [] // Initialize as an empty array if undefined
+  // Ensure permission is an array
+  if (!Array.isArray(newRole.value.permission)) {
+    newRole.value.permission = [] // Initialize as an empty array if undefined
   }
 
-  const index = newRole.value.permissions.indexOf(permissionId)
+  const index = newRole.value.permission.indexOf(permissionId)
 
   if (index > -1) {
     // Remove the permission from the array
-    newRole.value.permissions = newRole.value.permissions.filter((id) => id !== permissionId)
+    newRole.value.permission = newRole.value.permission.filter((id) => id !== permissionId)
   } else {
     // Add the new permission
-    newRole.value.permissions.push(permissionId)
+    newRole.value.permission.push(permissionId)
   }
 
-  // Debugging: log the permissions to ensure they are updated correctly
-  console.log('Updated Permissions:', newRole.value.permissions)
+  // Debugging: log the permission to ensure they are updated correctly
+  console.log('Updated Permissions:', newRole.value.permission)
 
   // Trigger Vue reactivity by updating the object
   newRole.value = { ...newRole.value }
@@ -91,7 +91,7 @@ watch(
     newRole.value = {
       ...props.role,
       role_owner: props.role.role_owner,
-      permissions: props.role.permissions,
+      permission: props.role.permission,
       status: props.role.status,
       created_by: user.value?.id || props.role.created_by, // Ensure created_by is set based on user data
     }
@@ -102,7 +102,7 @@ const test = () =>{
   alert("yolo")
 }
 
-const permissions = ref<any[]>([]) // Use appropriate type for permission data
+const permission = ref<any[]>([]) // Use appropriate type for permission data
 
 onMounted(async() => {
   listOfPermissions();
@@ -110,7 +110,7 @@ onMounted(async() => {
 
 const listOfPermissions = async() => {
   const response = await axios.get('/api/roles/create');
-  permissions.value = response.data;
+  permission.value = response.data;
 };
 
 const required = (v: string | SelectOption) => !!v || 'This field is required'
@@ -132,8 +132,8 @@ defineExpose({
  
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <VaListLabel>Role Permissions</VaListLabel>
-      <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permissions" :key="index">
-          <input type="checkbox" class="form-check-input" :value="itemPer.id" v-model="newRole.permissions" />
+      <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permission" :key="index">
+          <input type="checkbox" class="form-check-input" :value="itemPer.id" v-model="newRole.permission" />
           <label for="scales">{{itemPer.name}}</label>
       </div>
     </div>  

@@ -6,7 +6,7 @@
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
         </div>
-        <VaButton icon="add" @click="createNewRole">Role</VaButton>
+        <VaButton icon="add" @click="createNew_Role">Role</VaButton>
       </div>
       <ApiRoleTable
         :roles="allRoles"
@@ -25,31 +25,6 @@
       />
     </VaCardContent>
 
-    <VaModal
-      v-slot="{ cancel, ok }"
-      v-model="doShowRoleFormModal"
-      size="small"
-      mobile-fullscreen
-      close-button
-      stateful
-      hide-default-actions
-      :before-cancel="beforeEditFormModalClose"
-    >
-      <h1 v-if="roleToEdit === null" class="va-h5 mb-4">Add role</h1>
-      <h1 v-else class="va-h5 mb-4">Edit role</h1>
-      <EditRoleForm
-        ref="editFormRef"
-        :role="roleToEdit"
-        :save-button-label="roleToEdit === null ? 'Add' : 'Save'"
-        @close="cancel"
-        @save="
-          (role) => {
-            onRoleSaved(role)
-            ok()
-          }
-        "
-      />
-    </VaModal>
     <VaModal
       v-slot="{ cancel, ok }"
       v-model="doShowRole_FormModal"
@@ -82,23 +57,12 @@ import { ref , onMounted } from 'vue'
 import { useRoles } from './composables/useRoles'
 import RoleTable from './widgets/RolesTable.vue'
 import ApiRoleTable from './widgets/ApiRolesTable.vue'
-
-import EditRoleForm from './widgets/EditRoleForm.vue'
 import ApiEditRoleForm from './widgets/ApiEditRoleForm.vue'
 import { Role } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import axios from "axios" 
 
-
 const { roles, update, add, isLoading, remove, pagination, sorting } = useRoles()
-
-const roleToEdit = ref<Role | null>(null)
-const doShowRoleFormModal = ref(false)
-
-const editRole = (role: Role) => {
-  roleToEdit.value = role
-  doShowRoleFormModal.value = true
-}
 
 const role_ToEdit = ref<Role | null>(null)
 const doShowRole_FormModal = ref(false)
@@ -107,33 +71,42 @@ const edit_Role = (role: Role) => {
   role_ToEdit.value = role
   doShowRole_FormModal.value =true 
 }
-const createNewRole = () => {
-  roleToEdit.value = null
+
+const createNew_Role = () => {
+  role_ToEdit.value = null
   doShowRole_FormModal.value = true
 }
 
 const { init: notify } = useToast()
 
-const onRoleSaved = async (role: Role) => {
-  doShowRoleFormModal.value = false
-  if ('id' in role) {
-    await update(role as Role)
-    notify({
-      message: 'Role updated',
-      color: 'success',
-    })
-  } else {
-    await add(role as Role)
-    notify({
-      message: 'Role created',
-      color: 'success',
-    })
-  }
-}
-
 const on_RoleSaved = async (role: Role) => {
   console.log("role details :"+ JSON.stringify(role))
+  console.log("role_ToEdit :"+ role_ToEdit)
+  doShowRole_FormModal.value = false
+  try{
+    if(!role_ToEdit._value){
+      const response = await axios.post('api/roles',role);
+      console.log("res :"+ JSON.stringify(response))
+      if(!response){
+        return;
+      }
+      notify({
+        message: 'Book created',
+        color: 'success',
+      })
+    }else{
+      console.log("else")
+    }
+  }catch(err){
+    console.log("error : "+ err)
+    notify({
+        message: err,
+        color: 'danger',
+      })
+  }
 
+    // After saving or updating, call getAllRoles to refresh the data
+     await getAllRoles();
 }
 
 const { confirm } = useModal()
@@ -156,23 +129,6 @@ const onRoleDeleted = async (role: Role) => {
     message: 'Role deleted',
     color: 'success',
   })
-}
-
-const editFormRef = ref()
-
-const beforeEditFormModalClose = async (hide: () => unknown) => {
-  if (editFormRef.value.isFormHasUnsavedChanges) {
-    const agreed = await confirm({
-      maxWidth: '380px',
-      message: 'Form has unsaved changes. Are you sure you want to close it?',
-      size: 'small',
-    })
-    if (agreed) {
-      hide()
-    }
-  } else {
-    hide()
-  }
 }
 
 const edit_FormRef = ref()

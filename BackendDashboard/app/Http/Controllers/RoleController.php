@@ -17,7 +17,6 @@ class RoleController extends Controller
     {
         $roles = Role::orderBy('id','DESC')->get();
         return $roles;
-       // return $this->sendResponse($roles,'Successfully',200);
     }
     /**
      * Show the form for creating a new resource.
@@ -42,14 +41,15 @@ class RoleController extends Controller
                 'name' => 'required',
                 'permission' => 'required'
             ]);
-    
-            $role = Role::create(['name'=> $request->name]);
+            
+            $role = Role::create(['name'=> $request->name, 'guard_name' => 'web']);
     
             $role->syncPermissions($request->permission);
     
             return $this->sendResponse(null,'Successfully',200);
         }catch(Exception $e){
-            return $this->sendError(null, 'Error'. $e->getMessage(),422);
+            return $this->sendResponse(null, $e, 500);
+
         }
     }
     /**
@@ -122,5 +122,14 @@ class RoleController extends Controller
             return $this->sendResponse(null,'Successfully deleted',200);
         }
         return $this->sendError(null,'Error',404);
+    }
+
+    public function sendResponse($result, $message, $code)
+    {
+        return response()->json([
+            'success' => true,
+            'data'    => $result,
+            'message' => $message,
+        ], $code);
     }
 }
