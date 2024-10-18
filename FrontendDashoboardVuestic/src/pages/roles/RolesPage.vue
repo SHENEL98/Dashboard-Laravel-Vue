@@ -12,6 +12,7 @@
         :roles="allRoles"
         :loading="isLoading"
         @edit="edit_Role"
+        @delete="onRoleDeleted"
         >
       </ApiRoleTable>
       <RoleTable
@@ -130,7 +131,7 @@ const { confirm } = useModal()
 const onRoleDeleted = async (role: Role) => {
   const response = await confirm({
     title: 'Delete role',
-    message: `Are you sure you want to delete role "${role.role_name}"?`,
+    message: `Are you sure you want to delete role "${role.name}"?`,
     okText: 'Delete',
     size: 'small',
     maxWidth: '380px',
@@ -140,11 +141,14 @@ const onRoleDeleted = async (role: Role) => {
     return
   }
 
-  await remove(role)
+  await axios.delete('/api/roles/'+ role.id)
   notify({
     message: 'Role deleted',
     color: 'success',
   })
+  
+  // After deleting, call getAllRoles to refresh the data
+  await getAllRoles();
 }
 
 const edit_FormRef = ref()
