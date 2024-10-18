@@ -4,6 +4,8 @@ import { EmptyRole, Role } from '../types'
 import { SelectOption } from 'vuestic-ui'
 import { useUsers } from '../../users/composables/useUsers'
 import axios from 'axios'
+import { useToast } from 'vuestic-ui'
+
 
 const props = defineProps<{
   role: Role | null
@@ -15,6 +17,7 @@ defineEmits<{
   (event: 'close'): void
 }>()
 
+const { init: notify } = useToast()
 const user = ref(null); // Set to null initially
 
 onMounted(async () => {
@@ -58,7 +61,7 @@ const isPermissionSelected = (permissionId: number) => {
   return Array.isArray(newRole.value.permission) && newRole.value.permission.includes(permissionId)
 }
 
-const togglePermission = (permissionId: number) => {
+/*const togglePermission = (permissionId: number) => {
   // Ensure permission is an array
   if (!Array.isArray(newRole.value.permission)) {
     newRole.value.permission = [] // Initialize as an empty array if undefined
@@ -79,7 +82,7 @@ const togglePermission = (permissionId: number) => {
 
   // Trigger Vue reactivity by updating the object
   newRole.value = { ...newRole.value }
-}
+}*/
 
 watch(
   () => props.role,
@@ -98,20 +101,77 @@ watch(
   },
   { immediate: true },
 )
-const test = () =>{
-  alert("yolo")
-}
+const permissions = ref([]);
+const rolePermissions = ref([]);
 
 const permission = ref<any[]>([]) // Use appropriate type for permission data
 
 onMounted(async() => {
-  listOfPermissions();
+  if(props.role){
+    getEditRolePermission();
+  }else{
+    listOfPermissions();
+  }
 });
 
 const listOfPermissions = async() => {
   const response = await axios.get('/api/roles/create');
   permission.value = response.data;
 };
+
+const getEditRolePermission = async () => {
+  try {
+    const response = await axios.get('/api/roles/' + props.role.id + '/edit');
+    
+    if (response.status === 200) {
+      permissions.value = response.data.data.permission;  // Full list of permissions
+      rolePermissions.value = response.data.data.rolePermissions;  // Assigned permissions
+      
+      // Populate newRole.permission with the IDs from rolePermissions
+      newRole.value.permission = Object.values(rolePermissions.value);
+
+      console.log('Permissions:', permissions.value);
+      console.log('Role Permissions:', rolePermissions.value);
+      console.log('New Role Permissions:', newRole.value.permission);
+    }
+  } catch (error) {
+    notify({
+      message: error,
+      color: 'danger',
+    })
+  }
+};
+
+// that permission id checked or not
+const isItemChecked = (permissionId: number) => {
+  // Ensure `newRole.value.permission` is initialized as an array
+  if (!Array.isArray(newRole.value.permission)) {
+    newRole.value.permission = [];
+  }
+
+  // Check if the permissionId is in the `newRole.value.permission` array
+  return newRole.value.permission.includes(permissionId);
+}
+
+const toggleCheckbox = (index: number) => {
+  // Ensure `newRole.value.permission` is an array
+  if (!Array.isArray(newRole.value.permission)) {
+    newRole.value.permission = [];
+  }
+
+  const permissionId = permissions.value[index].id;
+
+  // Toggle the checkbox based on its current state
+  if (newRole.value.permission.includes(permissionId)) {
+    // Remove the permission
+    newRole.value.permission = newRole.value.permission.filter(id => id !== permissionId);
+    rolePermissions.value[permissionId] = null; // Update the rolePermissions object
+  } else {
+    // Add the permission
+    newRole.value.permission.push(permissionId);
+    rolePermissions.value[permissionId] = permissionId; // Update the rolePermissions object
+  }
+}
 
 const required = (v: string | SelectOption) => !!v || 'This field is required'
 
@@ -121,8 +181,6 @@ const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref(
 defineExpose({
   isForm_HasUnsavedChanges,
   isPermissionSelected,
-  togglePermission,
-  test
 })
 </script>
 
@@ -132,10 +190,21 @@ defineExpose({
  
     <div class="self-stretch flex-col justify-start items-start gap-4 flex">
       <VaListLabel>Role Permissions</VaListLabel>
-      <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permission" :key="index">
+      <template v-if="!props.role">
+        <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permission" :key="index">
           <input type="checkbox" class="form-check-input" :value="itemPer.id" v-model="newRole.permission" />
           <label for="scales">{{itemPer.name}}</label>
-      </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex gap-2 flex-col sm:flex-row w-full" v-for="(itemPer, index) in permissions" :key="index">
+          <label class="m-2">
+            <input type="checkbox" class="form-checkbox" v-model="newRole.permission" :value="itemPer.id" />
+            {{ itemPer.name }}
+          </label>
+          <br>
+        </div>
+      </template>
     </div>  
 
     <div class="flex justify-end flex-col-reverse sm:flex-row mt-4 gap-2">

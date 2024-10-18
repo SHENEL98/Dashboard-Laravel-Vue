@@ -81,9 +81,10 @@ const { init: notify } = useToast()
 
 const on_RoleSaved = async (role: Role) => {
   console.log("role details :"+ JSON.stringify(role))
-  console.log("role_ToEdit :"+ role_ToEdit)
+  console.log("role_ToEdit :"+ JSON.stringify(role_ToEdit))
   doShowRole_FormModal.value = false
   try{
+    // create new role 
     if(!role_ToEdit._value){
       const response = await axios.post('api/roles',role);
       console.log("res :"+ JSON.stringify(response))
@@ -95,7 +96,22 @@ const on_RoleSaved = async (role: Role) => {
         color: 'success',
       })
     }else{
-      console.log("else")
+      // edit existed role
+      await axios.patch('/api/roles/'+role.id,role)
+      .then(response => {
+          if(response.status === 200){
+            notify({
+              message: 'Book updated',
+              color: 'success',
+            })
+          }
+          console.log("saved" + response.data.message);
+      }).catch(error => {
+          notify({
+            message: error,
+            color: 'danger',
+          })
+      });
     }
   }catch(err){
     console.log("error : "+ err)
@@ -134,6 +150,7 @@ const onRoleDeleted = async (role: Role) => {
 const edit_FormRef = ref()
 
 const before_EditFormModalClose = async (hide: () => unknown) => {
+
   if (edit_FormRef.value.isForm_HasUnsavedChanges) {
     const agreed = await confirm({
       maxWidth: '380px',

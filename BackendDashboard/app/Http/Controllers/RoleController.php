@@ -16,6 +16,10 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::orderBy('id','DESC')->get();
+
+        /*$rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
+        ->where("role_has_permissions.role_id",$id)
+        ->get();*/
         return $roles;
     }
     /**
@@ -84,7 +88,7 @@ class RoleController extends Controller
             ->all();
         $data['roles'] = $role;
         $data['permission'] = $permission;
-        $data['permissions'] = $rolePermissions;
+        $data['rolePermissions'] = $rolePermissions;
     
         return $this->sendResponse($data, 'Success', 200);
     }
