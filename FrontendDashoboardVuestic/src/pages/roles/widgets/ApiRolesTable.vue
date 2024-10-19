@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, computed, ref } from 'vue'
+import { PropType, computed, ref, watch } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Role } from '../types'
 import UserAvatar from '../../users/widgets/UserAvatar.vue'
@@ -24,18 +24,56 @@ const props = defineProps({
   },
 })
 
-// Define reactive states for pagination
-const perPage = ref(10)  // Default items per page
-const currentPage = ref(1)  // Default current page
+// State for sorting
+const sortBy = ref<string>('name') // Default sorting column
+const sortingOrder = ref<'asc' | 'desc'>('asc') // Default sorting order
 
-// Compute total pages based on number of roles and perPage
-const totalPages = computed(() => Math.ceil(props.roles.length / perPage.value))
+// Pagination state
+const currentPage = ref(1)          // Current page number
+const itemsPerPage = ref(10)        // Number of items per page
+const totalItems = computed(() => props.roles.length)  // Total number of roles
 
-// Compute the paginated roles to show based on currentPage and perPage
+// Computed property for sorted roles
+const sortedRoles = computed(() => {
+  // If no sorting column is defined, return the original data
+  if (!sortBy.value) return props.roles
+
+  // Sort the roles based on the selected column (sortBy) and sorting order (sortingOrder)
+  return [...props.roles].sort((a, b) => {
+    const aValue = a[sortBy.value as keyof Role]
+    const bValue = b[sortBy.value as keyof Role]
+
+    // Handle sorting for null or undefined values
+    if (aValue == null && bValue != null) return sortingOrder.value === 'asc' ? 1 : -1
+    if (aValue != null && bValue == null) return sortingOrder.value === 'asc' ? -1 : 1
+
+    // If values are not null, compare them
+    if (aValue < bValue) return sortingOrder.value === 'asc' ? -1 : 1
+    if (aValue > bValue) return sortingOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+// Computed property for paginated roles
 const paginatedRoles = computed(() => {
-  const start = (currentPage.value - 1) * perPage.value
-  const end = start + perPage.value
-  return props.roles.slice(start, end)
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return sortedRoles.value.slice(start, end)
+})
+
+// Calculate the total number of pages
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
+
+// Watch for changes in the sorting state (sortBy and sortingOrder)
+watch([sortBy, sortingOrder], () => {
+  console.log(`Sorting by ${sortBy.value} in ${sortingOrder.value} order`)
+  // Reset to the first page after sorting
+  currentPage.value = 1
+})
+
+// Watch for changes in itemsPerPage and adjust current page if necessary
+watch(itemsPerPage, () => {
+  currentPage.value = 1
 })
 
 const emit = defineEmits<{
@@ -52,11 +90,13 @@ const avatarColor = (userName: string) => {
 </script>
 
 <template>
-  <div>
     <VaDataTable
       :items="paginatedRoles"
       :columns="columns"
       :loading="loading"
+      v-model:sort-by="sortBy"
+      v-model:sorting-order="sortingOrder"
+      hoverable
     >
       <!-- Custom template for the Permissions column -->
       <template #cell(permissions)="{ rowData: role }">
@@ -96,33 +136,23 @@ const avatarColor = (userName: string) => {
       </template>
     </VaDataTable>
     <!-- Pagination controls and results per page -->
+        <!-- Pagination Controls -->
     <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
+      <!-- Results per page dropdown -->
       <div>
-        <b>{{ props.roles.length }} results.</b>
-        Results per page:
-        <VaSelect 
-          v-model="perPage" 
-          class="!w-20" 
-          :options="[10, 50, 100]" 
-        />
+        <b>{{ totalItems }} results.</b> <!-- Show total results -->
+        Results per page
+        <VaSelect v-model="itemsPerPage" class="!w-20" :options="[10, 20, 50, 100]" /> <!-- Select items per page -->
       </div>
-      <!-- Pagination navigation -->
-      <div v-if="totalPages > 1" class="flex items-center">
+
+      <!-- Pagination buttons -->
+      <div v-if="totalPages > 1" class="flex">
         <VaButton
           preset="secondary"
           icon="va-arrow-left"
           aria-label="Previous page"
           :disabled="currentPage === 1"
           @click="currentPage--"
-        />
-        <VaPagination
-          v-model="currentPage"
-          :pages="totalPages"
-          buttons-preset="secondary"
-          :visible-pages="5"
-          :boundary-links="false"
-          :direction-links="false"
-          class="mx-2"
         />
         <VaButton
           preset="secondary"
@@ -131,8 +161,14 @@ const avatarColor = (userName: string) => {
           :disabled="currentPage === totalPages"
           @click="currentPage++"
         />
-      </div>
-    </div>
+        <VaPagination
+          v-model="currentPage"
+          :pages="totalPages"
+          :visible-pages="5"
+          :boundary-links="false"
+          :direction-links="false"
+        />
+      </div> 
     <!-- / Pagination controls and results per page -->
   </div>
 </template>
