@@ -103,7 +103,7 @@ const avatarColor = (userName: string) => {
           <span v-if="role.permissions.join(', ').length <= 25">
             {{ role.permissions.join(', ') }}
           </span>
-          <span v-else>
+          <span v-else :title="role.permissions ">
             {{ role.permissions.join(', ').slice(0, 25) }}... (+{{ role.permissions.length }} more)
           </span>
         </div>
