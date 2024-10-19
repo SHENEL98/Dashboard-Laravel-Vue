@@ -142,37 +142,6 @@ const getEditRolePermission = async () => {
   }
 };
 
-// that permission id checked or not
-const isItemChecked = (permissionId: number) => {
-  // Ensure `newRole.value.permission` is initialized as an array
-  if (!Array.isArray(newRole.value.permission)) {
-    newRole.value.permission = [];
-  }
-
-  // Check if the permissionId is in the `newRole.value.permission` array
-  return newRole.value.permission.includes(permissionId);
-}
-
-const toggleCheckbox = (index: number) => {
-  // Ensure `newRole.value.permission` is an array
-  if (!Array.isArray(newRole.value.permission)) {
-    newRole.value.permission = [];
-  }
-
-  const permissionId = permissions.value[index].id;
-
-  // Toggle the checkbox based on its current state
-  if (newRole.value.permission.includes(permissionId)) {
-    // Remove the permission
-    newRole.value.permission = newRole.value.permission.filter(id => id !== permissionId);
-    rolePermissions.value[permissionId] = null; // Update the rolePermissions object
-  } else {
-    // Add the permission
-    newRole.value.permission.push(permissionId);
-    rolePermissions.value[permissionId] = permissionId; // Update the rolePermissions object
-  }
-}
-
 const required = (v: string | SelectOption) => !!v || 'This field is required'
 
 const { users: teamUsers, filters: teamFilters } = useUsers({ pagination: ref({ page: 1, perPage: 100, total: 10 }) })
