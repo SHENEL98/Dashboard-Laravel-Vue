@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import { PropType, computed } from 'vue'
+import { PropType, computed, ref } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Role } from '../types'
 import UserAvatar from '../../users/widgets/UserAvatar.vue'
-import RoleStatusBadge from '../components/RoleStatusBadge.vue'
-import { Pagination, Sorting } from '../../../data/pages/roles'
-import { useVModel } from '@vueuse/core'
 import moment from "moment";
 
 const columns = defineVaDataTableColumns([
@@ -25,18 +22,20 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  sortBy: {
-    type: Object as PropType<Sorting['sortBy']>,
-    required: true,
-  },
-  sortingOrder: {
-    type: Object as PropType<Sorting['sortingOrder']>,
-    required: true,
-  },
-  pagination: {
-    type: Object as PropType<Pagination>,
-    required: true,
-  },
+})
+
+// Define reactive states for pagination
+const perPage = ref(10)  // Default items per page
+const currentPage = ref(1)  // Default current page
+
+// Compute total pages based on number of roles and perPage
+const totalPages = computed(() => Math.ceil(props.roles.length / perPage.value))
+
+// Compute the paginated roles to show based on currentPage and perPage
+const paginatedRoles = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value
+  const end = start + perPage.value
+  return props.roles.slice(start, end)
 })
 
 const emit = defineEmits<{
@@ -50,16 +49,12 @@ const avatarColor = (userName: string) => {
   return colors[index]
 }
 
-const sortByVModel = useVModel(props, 'sortBy', emit)
-const sortingOrderVModel = useVModel(props, 'sortingOrder', emit)
-
-const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagination.perPage))
 </script>
 
 <template>
   <div>
     <VaDataTable
-      :items="roles"
+      :items="paginatedRoles"
       :columns="columns"
       :loading="loading"
     >
@@ -100,6 +95,45 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
         </div>
       </template>
     </VaDataTable>
+    <!-- Pagination controls and results per page -->
+    <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
+      <div>
+        <b>{{ props.roles.length }} results.</b>
+        Results per page:
+        <VaSelect 
+          v-model="perPage" 
+          class="!w-20" 
+          :options="[10, 50, 100]" 
+        />
+      </div>
+      <!-- Pagination navigation -->
+      <div v-if="totalPages > 1" class="flex items-center">
+        <VaButton
+          preset="secondary"
+          icon="va-arrow-left"
+          aria-label="Previous page"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        />
+        <VaPagination
+          v-model="currentPage"
+          :pages="totalPages"
+          buttons-preset="secondary"
+          :visible-pages="5"
+          :boundary-links="false"
+          :direction-links="false"
+          class="mx-2"
+        />
+        <VaButton
+          preset="secondary"
+          icon="va-arrow-right"
+          aria-label="Next page"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        />
+      </div>
+    </div>
+    <!-- / Pagination controls and results per page -->
   </div>
 </template>
 
