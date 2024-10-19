@@ -17,10 +17,14 @@ class RoleController extends Controller
     {
         $roles = Role::orderBy('id','DESC')->get();
 
-        /*$rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
-        ->where("role_has_permissions.role_id",$id)
-        ->get();*/
-        return $roles;
+        $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")->join("roles","roles.id","=","role_has_permissions.role_id")
+            ->select("roles.id as role_id", "permissions.name as permission_name")
+            ->get();
+
+        return response()->json(array(
+            'roles' => $roles,
+            'rolePermissions' => $rolePermissions, 
+        ));
     }
     /**
      * Show the form for creating a new resource.

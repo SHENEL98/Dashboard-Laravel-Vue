@@ -146,7 +146,7 @@ const onRoleDeleted = async (role: Role) => {
     message: 'Role deleted',
     color: 'success',
   })
-  
+
   // After deleting, call getAllRoles to refresh the data
   await getAllRoles();
 }
@@ -173,10 +173,33 @@ const allRoles = ref([]);
 const getAllRoles = async () => {
   try {
     const response = await axios.get('api/roles');
-    console.log("roles:", response.data); // Adjusted to reflect the correct response structure
-    allRoles.value = response.data; // Assuming response.data is the array of roles
+   
+    // First, store roles and rolePermissions
+    allRoles.value = response.data.roles; // Assuming response.data is the array of roles
+    let rolePermissions = response.data.rolePermissions;  // Assuming response.data is the array of rolePermissions
+
+    // Map over allRoles and append permissions for each role
+    allRoles.value = allRoles.value.map(role => {
+        // Find permissions for the current role based on role_id
+        let permissions = rolePermissions
+            .filter(permission => permission.role_id === role.id)
+            .map(permission => permission.permission_name);
+        
+        // Add a new property 'permissions' to the role with the array of permission names
+        return {
+            ...role, 
+            permissions: permissions
+        };
+    });
+
+    // Now allRoles will include the permissions array for each role
+    console.log(allRoles);
+
   } catch (error) {
-    console.error('Error fetching roles:', error);
+      notify({
+        message: 'Error :'+error,
+        color: 'danger',
+      })
   }
 };
 

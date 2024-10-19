@@ -6,10 +6,11 @@ import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import RoleStatusBadge from '../components/RoleStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/roles'
 import { useVModel } from '@vueuse/core'
+import moment from "moment";
 
 const columns = defineVaDataTableColumns([
   { label: 'Role name', key: 'name', sortable: true },
-  { label: 'Permissions', key: 'role_owner', sortable: true },
+  { label: 'Permissions', key: 'permissions', sortable: false,},
   { label: 'Assigined to', key: 'status', sortable: true },
   { label: 'Creation Date', key: 'created_at', sortable: true },
   { label: ' ', key: 'actions' },
@@ -62,37 +63,22 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
       :columns="columns"
       :loading="loading"
     >
-      <template #cell(role_name)="{ rowData }">
-        <div class="ellipsis max-w-[230px] lg:max-w-[450px]">
-          {{ rowData.name }}
+      <!-- Custom template for the Permissions column -->
+      <template #cell(permissions)="{ rowData: role }">
+        <div>
+          <span v-if="role.permissions.join(', ').length <= 25">
+            {{ role.permissions.join(', ') }}
+          </span>
+          <span v-else>
+            {{ role.permissions.join(', ').slice(0, 25) }}... (+{{ role.permissions.length }} more)
+          </span>
         </div>
       </template>
-      <template #cell(role_owner)="{ rowData }">
-        <div class="flex items-center gap-2 ellipsis max-w-[230px]">
-          {{ rowData.role_owner }}
+      <template #cell(created_at)="{ rowData }">
+        <div class="flex items-center gap-2 ellipsis max-w-[230px]"> 
+          {{ moment(rowData.created_at).format('DD-MMM-YYYY HH:mm') }}
         </div>
       </template>
-      <template #cell(categories)="{ rowData }">
-        <div class="flex items-center gap-2 ellipsis max-w-[230px]">
-          {{ rowData.categories }}
-        </div>
-        <!--<VaAvatarGroup
-          size="small"
-          :options="
-            (role as Role).team.map((user) => ({
-              label: user.fullname,
-              src: user.avatar,
-              fallbackText: user.fullname[0],
-              color: avatarColor(user.fullname),
-            }))
-          "
-          :max="5"
-        />-->
-      </template>
-      <!-- <template #cell(status)="{ rowData: role }">
-        <RoleStatusBadge :status="role.status" />
-      </template> -->
-
       <template #cell(actions)="{ rowData: role }">
         <div class="flex gap-2 justify-end">
           <VaButton
