@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
-import { Role } from '../types'
 import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import moment from "moment";
 

@@ -1,6 +1,5 @@
 <template>
-  <h1 class="page-title">Roles</h1>
-
+  <h3 class="h3">Roles</h3>
   <VaCard>
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
@@ -15,15 +14,6 @@
         @delete="onRoleDeleted"
         >
       </ApiRoleTable>
-      <RoleTable
-        v-model:sort-by="sorting.sortBy"
-        v-model:sorting-order="sorting.sortingOrder"
-        v-model:pagination="pagination"
-        :roles="roles"
-        :loading="isLoading"
-        @edit="editRole"
-        @delete="onRoleDeleted"
-      />
     </VaCardContent>
 
     <VaModal
@@ -54,16 +44,12 @@
   </VaCard>
 </template>
 <script setup lang="ts">
-import { ref , onMounted } from 'vue'
-import { useRoles } from './composables/useRoles'
-import RoleTable from './widgets/RolesTable.vue'
+import { ref , onMounted } from 'vue' 
 import ApiRoleTable from './widgets/ApiRolesTable.vue'
 import ApiEditRoleForm from './widgets/ApiEditRoleForm.vue'
 import { Role } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import axios from "axios" 
-
-const { roles, update, add, isLoading, remove, pagination, sorting } = useRoles()
 
 const role_ToEdit = ref<Role | null>(null)
 const doShowRole_FormModal = ref(false)
@@ -81,8 +67,6 @@ const createNew_Role = () => {
 const { init: notify } = useToast()
 
 const on_RoleSaved = async (role: Role) => {
-  console.log("role details :"+ JSON.stringify(role))
-  console.log("role_ToEdit :"+ JSON.stringify(role_ToEdit))
   doShowRole_FormModal.value = false
   try{
     // create new role 
