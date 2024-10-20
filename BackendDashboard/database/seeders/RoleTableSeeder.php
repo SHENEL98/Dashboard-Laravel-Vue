@@ -18,7 +18,7 @@ class RoleTableSeeder extends Seeder
             'name' => 'Admin Full',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
-            'level' => 'admin'
+            'levels' => 'admin'
         ]);
         $role = Role::create(['name' => 'admin']);
         $permissions = Permission::pluck('id','id')->all();

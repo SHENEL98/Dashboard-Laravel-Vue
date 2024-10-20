@@ -14,15 +14,14 @@ class PermissionTableSeeder extends Seeder
     {
         /* permission lists */
         $permissions = [
-            'modul-role',
             'user-edit',
             'user-create',
             'user-delete',
             'user-list',
-            'post-list',
-            'post-create',
-            'post-edit',
-            'post-delete'
+            'book-list',
+            'book-create',
+            'book-edit',
+            'book-delete'
         ];
         foreach($permissions as $permission){
             Permission::create(['name' => $permission]);
