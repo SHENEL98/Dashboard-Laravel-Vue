@@ -11,6 +11,7 @@
         :roles="allRoles"
         :loading="isLoading"
         @edit="edit_Role"
+        @permission_management="permissionManagement"
         @delete="onRoleDeleted"
         >
       </ApiRoleTable>
@@ -39,6 +40,23 @@
             ok()
           }
         "
+      />    
+    </VaModal>
+    <VaModal
+      v-slot="{cancel, ok}"
+      v-model="doShowPermission_FormModal"
+      size="medium"
+    >
+      <h1 class="va-h5 mb-4">Permission Management</h1>
+      <PermissionModal
+        ref="permission_FormRef"
+        :rolePermisson="roleDetails"
+        @save="
+          (role) => {
+            on_PermissionSaved(role)
+            ok()
+          }
+        "
       />
     </VaModal>
   </VaCard>
@@ -47,6 +65,7 @@
 import { ref , onMounted } from 'vue' 
 import ApiRoleTable from './widgets/ApiRolesTable.vue'
 import ApiEditRoleForm from './widgets/ApiEditRoleForm.vue'
+import PermissionModal  from './widgets/PermissionModal.vue'
 import { Role } from './types'
 import { useModal, useToast } from 'vuestic-ui'
 import axios from "axios" 
@@ -62,6 +81,14 @@ const edit_Role = (role: Role) => {
 const createNew_Role = () => {
   role_ToEdit.value = null
   doShowRole_FormModal.value = true
+}
+
+const roleDetails = ref<Role | null>(null)
+const doShowPermission_FormModal = ref(false)
+
+const permissionManagement = (role: Role) => {
+  roleDetails.value = role
+  doShowPermission_FormModal.value =true 
 }
 
 const { init: notify } = useToast()
@@ -108,6 +135,10 @@ const on_RoleSaved = async (role: Role) => {
 
     // After saving or updating, call getAllRoles to refresh the data
      await getAllRoles();
+}
+
+const on_PermissionSaved = () => {
+  console.log("save permisiion")
 }
 
 const { confirm } = useModal()

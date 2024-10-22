@@ -118,6 +118,15 @@ const avatarColor = (userName: string) => {
           <VaButton
             preset="primary"
             size="small"
+            color="success"
+            icon="group-add"
+            title="Permission Management"
+            aria-label="Edit role"
+            @click="$emit('permission_management', role as Role)"
+          />
+          <VaButton
+            preset="primary"
+            size="small"
             color="primary"
             icon="mso-edit"
             aria-label="Edit role"
