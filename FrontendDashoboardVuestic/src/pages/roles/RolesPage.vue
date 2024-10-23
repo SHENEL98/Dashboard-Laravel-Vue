@@ -43,21 +43,24 @@
       />    
     </VaModal>
     <VaModal
-      v-slot="{cancel, ok}"
       v-model="doShowPermission_FormModal"
       size="medium"
+      hide-default-actions
     >
       <h1 class="va-h5 mb-4">Permission Management</h1>
       <PermissionModal
         ref="permission_FormRef"
         :rolePermisson="roleDetails"
-        @save="
+       
+      />
+      <!--
+       @save="
           (role) => {
             on_PermissionSaved(role)
             ok()
           }
         "
-      />
+        -->
     </VaModal>
   </VaCard>
 </template>

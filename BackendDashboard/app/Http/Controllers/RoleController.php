@@ -152,8 +152,32 @@ class RoleController extends Controller
        }
 
        // Get users associated with the role using the relationship
-       $users = $role->users;  // This works because Spatie sets up a many-to-many relationship
+       //$roleUsers = $role->users;  // This works because Spatie sets up a many-to-many relationship
+       $roleUsers = $role->users->pluck('id')->toArray(); // Array of user IDs who have the role
+       $allUser = User::all(); // Get all users
 
-       return response()->json($users);
+       return response()->json([
+            'roleUsers' => $roleUsers, 
+            'allUser' => $allUser]
+        );
+    }
+
+    public function createRoleUsers(Request $request)
+    {
+        // Get role ID and user IDs from the request
+        $roleId = $request->role_id;
+        $userIds = $request->user_ids; // Array of user IDs to assign to the role
+
+        // Find the role
+        $role = Role::find($roleId);
+
+        if (!$role) {
+            return response()->json(['message' => 'Role not found'], 404);
+        }
+
+        // Sync the users with the role (this replaces any previous assignments with the new ones)
+        $role->users()->sync($userIds);
+
+        return response()->json(['message' => 'Users successfully assigned to the role']);
     }
 }
