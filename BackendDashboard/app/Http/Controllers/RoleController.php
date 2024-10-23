@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Controllers;
+
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -139,5 +141,19 @@ class RoleController extends Controller
             'data'    => $result,
             'message' => $message,
         ], $code);
+    }
+
+    public function getUserWithRoles($roleId){
+       // Find the role by ID
+       $role = Role::find($roleId);
+
+       if (!$role) {
+           return response()->json(['message' => 'Role not found'], 404);
+       }
+
+       // Get users associated with the role using the relationship
+       $users = $role->users;  // This works because Spatie sets up a many-to-many relationship
+
+       return response()->json($users);
     }
 }
