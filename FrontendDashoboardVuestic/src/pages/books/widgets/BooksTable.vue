@@ -2,7 +2,7 @@
 import { PropType, computed } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Book } from '../types'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
+import UserAvatar from '../../users/widgets/User_Avatar.vue'
 import BookStatusBadge from '../components/BookStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/books'
 import { useVModel } from '@vueuse/core'

@@ -4,7 +4,7 @@ import { EmptyBook, Book } from '../types'
 import { SelectOption } from 'vuestic-ui'
 import { useUsers } from '../../users/composables/useUsers'
 import BookStatusBadge from '../components/BookStatusBadge.vue'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
+import UserAvatar from '../../users/widgets/User_Avatar.vue'
 import moment from "moment"
 import axios from "axios" 
 

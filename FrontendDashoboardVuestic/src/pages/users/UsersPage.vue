@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import UsersTable from './widgets/UsersTable.vue'
-import EditUserForm from './widgets/EditUserForm.vue'
+import UsersTable from './widgets/Users_Table.vue'
+import EditUserForm from './widgets/Edit_UserForm.vue'
 import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'

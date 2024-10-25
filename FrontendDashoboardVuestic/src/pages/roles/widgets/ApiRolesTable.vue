@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PropType, computed, ref, watch } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
+import UserAvatar from '../../users/widgets/User_Avatar.vue'
 import moment from "moment";
 import axios from 'axios';
 
@@ -104,6 +104,16 @@ const avatarColor = (userName: string) => {
           </span>
           <span v-else :title="role.permissions ">
             {{ role.permissions.join(', ').slice(0, 25) }}... (+{{ role.permissions.length }} more)
+          </span>
+        </div>
+      </template>
+      <template #cell(role_users)="{ rowData: role }">
+        <div>
+          <span v-if="role.role_users.join(', ').length <= 15">
+            {{ role.role_users.join(', ') }}
+          </span>
+          <span v-else :title="role.role_users ">
+            {{ role.role_users.join(', ').slice(0, 15) }}... (more)
           </span>
         </div>
       </template>

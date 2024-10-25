@@ -2,7 +2,7 @@
 import { PropType, computed } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Project } from '../types'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
+import UserAvatar from '../../users/widgets/User_Avatar.vue'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/projects'
 import { useVModel } from '@vueuse/core'

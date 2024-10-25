@@ -2,7 +2,7 @@
 import { PropType, computed, ref, watch } from 'vue'
 import { useForm } from 'vuestic-ui'
 import { User, UserRole } from '../types'
-import UserAvatar from './UserAvatar.vue'
+import UserAvatar from './User_Avatar.vue'
 import { useProjects } from '../../projects/composables/useProjects'
 import { validators } from '../../../services/utils'
 
