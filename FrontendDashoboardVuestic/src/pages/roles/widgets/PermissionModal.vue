@@ -61,6 +61,9 @@ import axios from 'axios'
                     user_ids: this.selectedUsers // Send selected user IDs
                 })
                 .then(response => {
+                    // Emit the 'refresh-roles' event to inform the parent component to refresh roles
+                    this.$emit('refresh-roles');
+
                     notify({
                         message: response.data.message,
                         color: 'success',  // Show success notification

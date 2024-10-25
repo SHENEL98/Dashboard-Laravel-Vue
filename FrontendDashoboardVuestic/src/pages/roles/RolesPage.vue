@@ -13,6 +13,7 @@
         @edit="edit_Role"
         @permission_management="permissionManagement"
         @delete="onRoleDeleted"
+        @get-all-role-users="getAllRoles"
         >
       </ApiRoleTable>
     </VaCardContent>
@@ -51,7 +52,7 @@
       <PermissionModal
         ref="permission_FormRef"
         :rolePermisson="roleDetails"
-       
+        @refresh-roles="getAllRoles" 
       />
       <!--
        @save="

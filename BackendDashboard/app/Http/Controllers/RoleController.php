@@ -17,16 +17,32 @@ class RoleController extends Controller
      */
     public function index()
     {
+        // Get all roles with their associated users
         $roles = Role::orderBy('id','DESC')->get();
 
-        $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")->join("roles","roles.id","=","role_has_permissions.role_id")
+        // Get permissions related to each role
+        $rolePermissions = Permission::join("role_has_permissions", "role_has_permissions.permission_id", "=", "permissions.id")
+            ->join("roles", "roles.id", "=", "role_has_permissions.role_id")
             ->select("roles.id as role_id", "permissions.name as permission_name")
             ->get();
 
-        return response()->json(array(
-            'roles' => $roles,
-            'rolePermissions' => $rolePermissions, 
-        ));
+        // Format roles to include users' names
+        $formattedRoles = $roles->map(function ($role) {
+            return [
+                'id' => $role->id,
+                'name' => $role->name,
+                'guard_name' => $role->guard_name,
+                'created_at' => $role->created_at,
+                'updated_at' => $role->updated_at,
+                'role_users' => $role->users->pluck('name') // Only include user names
+            ];
+        });
+
+        // $roleUsers = $role->users->pluck('id')->toArray(); 
+        return response()->json([
+            'roles' => $formattedRoles,
+            'rolePermissions' => $rolePermissions,
+        ]);
     }
     /**
      * Show the form for creating a new resource.
