@@ -16,6 +16,7 @@ export default defineConfig({
     }),
   ],
   server:{
+    host: '0.0.0.0', // Allows access from network devices
     port: 3000,
   }
 })

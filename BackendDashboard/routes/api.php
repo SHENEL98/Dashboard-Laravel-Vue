@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,9 @@ Route::middleware(['auth:sanctum'])->group(function (){
 
 
 });
+
+Route::resource('users',UserController::class);
+
 
 Route::group(['prefix' => 'v1'], function() {
     Route::apiResource('books', BookController::class);

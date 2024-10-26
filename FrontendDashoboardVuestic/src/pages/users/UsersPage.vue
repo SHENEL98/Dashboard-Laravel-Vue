@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import UsersTable from './widgets/Users_Table.vue'
+import Users_Table from './widgets/Users_Table.vue'
 import EditUserForm from './widgets/Edit_UserForm.vue'
 import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
+import UsersTable from './widgets/UsersTable.vue'
 
 const doShowEditUserModal = ref(false)
 
@@ -73,6 +74,12 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
 
   <VaCard>
     <VaCardContent>
+      <UsersTable />
+    </VaCardContent>
+  </VaCard>
+
+  <VaCard>
+    <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
           <VaButtonToggle
@@ -93,7 +100,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
         <VaButton @click="showAddUserModal">Add User</VaButton>
       </div>
 
-      <UsersTable
+      <Users_Table
         v-model:sort-by="sorting.sortBy"
         v-model:sorting-order="sorting.sortingOrder"
         :users="users"
