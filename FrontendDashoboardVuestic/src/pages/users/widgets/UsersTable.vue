@@ -4,26 +4,24 @@
         
         </div>
         <VaButton >Add User</VaButton>
-      </div>
+    </div>
   
 
       {{ allUsers }}
-    <!-- --<VaDataTable
-      :items="items"
-      :columns="columns"
-      :filter="filter"
-      :filter-method="customFilteringFn"
-      @filtered="filteredCount = $event.items.length"
-    /> -->
+
+    <VaDataTable />
+ 
   </template>
 
 <script>
 import axios from "axios";
+import { defineVaDataTableColumns, VaDataTable } from 'vuestic-ui'
 
 export default {
   data() {
     return {
         allUsers : {},
+        
 
     }
   },

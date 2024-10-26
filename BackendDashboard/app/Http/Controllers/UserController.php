@@ -11,8 +11,23 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     public function index(){
-        $users = User::all();
+        
+        // Use the `with` method to load roles (Spatie will automatically use model_has_roles)
+        $users = User::with('roles')->get();
 
-        return $users ;
+        // Format the response to include roles as 'roleName' for each user
+        $users = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'roles' => $user->roles->pluck('name')->toArray(), // Array of role names
+            ];
+        });
+
+        return response()->json($users);
+
     }
 }
