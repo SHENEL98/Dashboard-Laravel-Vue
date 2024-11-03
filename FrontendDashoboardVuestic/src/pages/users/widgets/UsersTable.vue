@@ -5,6 +5,21 @@
         <VaButton >Add User</VaButton>
     </div>
 
+    <VaDataTable
+      :items="allUsers"
+      :columns="columns"
+      :loading="loading"
+    >
+      <template #cell(index)="{ rowIndex }">
+        <div>{{ rowIndex + 1 }}</div>  <!-- Display index number -->
+      </template>
+      <template #cell(created_at)="{ rowData }">
+        <div class="flex items-center gap-2 ellipsis max-w-[230px]"> 
+          {{ formatDate(rowData.created_at) }}
+        </div>
+      </template>
+    </VaDataTable>
+
     <table class="table table-hover">
       <thead>
         <tr>
@@ -43,13 +58,22 @@
 
 <script>
 import axios from "axios";
-import { defineVaDataTableColumns, VaDataTable } from 'vuestic-ui'
+import { defineVaDataTableColumns } from 'vuestic-ui'
+import moment from "moment";
 
 export default {
   data() {
     return {
-        allUsers : {},
-
+        allUsers : [],    // Initialize as an empty array
+        columns : defineVaDataTableColumns([
+          { label: 'Index', key: 'index' },  // Add index column
+          { label: 'User name', key: 'name', sortable: true },
+          { label: 'Email', key: 'email', sortable: true },
+          { label: 'Roles', key: 'roles', sortable: true },
+          { label: 'Created on', key: 'created_at', sortable: true },
+          { label: ' ', key: 'actions' },
+        ]),
+        loading: true  // Optional: indicate loading state
     }
   },
   mounted: function() {
@@ -57,6 +81,7 @@ export default {
   },
   methods: {
     getAllUsers(){
+        this.loading = true;  // Set loading to true while fetching
         axios.get('api/users')
             .then(response => {
                 this.allUsers = response.data;
@@ -65,6 +90,12 @@ export default {
             .catch(err =>{
                 console.log("errs :"+ err)
             })
+            .finally(() => {
+              this.loading = false;  // Reset loading to false once finished
+            });
+    },
+    formatDate(date) {
+      return moment(date).format('DD-MMM-YYYY HH:mm');
     }
   },
 
