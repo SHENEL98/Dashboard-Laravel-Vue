@@ -153,7 +153,7 @@ const avatarColor = (userName: string) => {
       </template>
     </VaDataTable>
     <!-- Pagination controls and results per page -->
-        <!-- Pagination Controls -->
+     <!-- Pagination Controls -->
     <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
       <!-- Results per page dropdown -->
       <div>
