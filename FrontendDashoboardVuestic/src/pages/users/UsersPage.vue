@@ -78,7 +78,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
     </VaCardContent>
   </VaCard>
 
-  <VaCard>
+  <!-- <VaCard>
     <VaCardContent>
       <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">
@@ -110,7 +110,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
         @deleteUser="onUserDelete"
       />
     </VaCardContent>
-  </VaCard>
+  </VaCard> -->
 
   <VaModal
     v-slot="{ cancel, ok }"
