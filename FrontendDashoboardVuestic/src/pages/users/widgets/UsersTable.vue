@@ -2,7 +2,7 @@
    <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
         <div class="flex flex-col md:flex-row gap-2 justify-start">        
         </div>
-        <VaButton >Add User</VaButton>
+        <VaButton @click="addUser">Add User</VaButton>
     </div>
 
     <VaDataTable
@@ -61,6 +61,7 @@ import { ref, computed, watch } from "vue";
 import axios from "axios";
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import moment from "moment";
+import { addUser } from "../../../data/pages/users";
 
 export default {
   data() {
@@ -79,6 +80,7 @@ export default {
         sortingOrder: "asc", // Default sorting order
         currentPage: 1, // Current page number
         itemsPerPage: 10, // Items per page
+        doShowUserModal: false,
       }
   },
   computed: {
@@ -134,6 +136,9 @@ export default {
     },
     formatDate(date) {
       return moment(date).format('DD-MMM-YYYY HH:mm');
+    },
+    addUser(){
+      alert("adduserAlert")
     },
   },
 
