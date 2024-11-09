@@ -37,12 +37,13 @@
       v-slot="{ cancel, ok }"
       v-model="doShowUserModal"
       size="small"
-
+      hide-default-actions
+     
     >
-    yolo
+      <h1 class="va-h5 mb-4">Add User</h1>
       <!-- <h1 v-if="projectToEdit === null" class="va-h5 mb-4">Add project</h1>
       <h1 v-else class="va-h5 mb-4">Edit project</h1>-->
-      <UserForm ref="userFormRef"/>
+      <UserForm ref="userFormRef"  @save="saveUser"/>
      
     </VaModal>
 </template>
@@ -135,6 +136,9 @@ export default {
     addUser() {
       this.doShowUserModal = true;
 
+    },
+    saveUser(userInfo) {
+      alert("saveuser" + userInfo)
     },
   },
 
