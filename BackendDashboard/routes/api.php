@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('getUserWithRoles/{id}',[RoleController::class,'getUserWithRoles']);
     Route::post('assignUsersToRole', [RoleController::class,'createRoleUsers']);
 
-
+    Route::post('/createNewUser', [UserController::class, 'store']);
 });
 
 Route::resource('users',UserController::class);
