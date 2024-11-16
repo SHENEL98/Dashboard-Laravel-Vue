@@ -64,6 +64,12 @@ import { VaInput, VaForm, VaButton, VaIcon } from 'vuestic-ui'
 
 export default {
   name: 'UserForm',
+  props: {
+    userInfo: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       user: {
@@ -77,6 +83,10 @@ export default {
     }
   },
   computed: {
+    // Check it's create user or edit user
+    isEdit() {
+      return this.userInfo !== null;
+    },  
     // Check if password and confirm password match
     passwordMismatch() {
       return this.user.password !== this.user.confirmPassword
@@ -86,22 +96,44 @@ export default {
       return !this.user.name || !this.user.email || !this.user.password || this.passwordMismatch
     },
   },
+  watch: {
+    userInfo: {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          this.user = { ...newValue, password: '', confirmPassword: '' };
+        } else {
+          this.user = { name: '', email: '', password: '', confirmPassword: '' };
+        }
+      },
+    },
+  },
   methods: {
     async saveUser() {
       this.isLoading = true
       this.errors = {}
 
       try {
-        // Send POST request to Laravel API
-        const response = await axios.post('/api/createNewUser', {
-          name: this.user.name,
-          email: this.user.email,
-          password: this.user.password,
-          password_confirmation: this.user.confirmPassword,
-        })
+        let response ;
+        if (this.isEdit) {
+          // Update user
+          console.log("edit user : "+ JSON.stringify(this.user))
+        }
+        else{
+          // Create user
+          // Send POST request to Laravel API
 
-        alert(response.data.message)
-      } catch (error) {
+          response = await axios.post('/api/users', {
+            name: this.user.name,
+            email: this.user.email,
+            password: this.user.password,
+            password_confirmation: this.user.confirmPassword,
+            });
+        }
+        console.log("done")
+       // this.$emit('save', response.data.user);
+        } 
+      catch (error) {
         if (error.response && error.response.status === 422) {
           // Handle validation errors from the Laravel API
           this.errors = error.response.data.errors

@@ -12,6 +12,26 @@
         {{ formatDate(rowData.created_at) }}
       </div>
     </template>
+     <template #cell(actions)="{ rowData }">
+        <div class="flex gap-2 justify-end">
+          <VaButton
+            preset="primary"
+            size="small"
+            color="primary"
+            icon="mso-edit"
+            aria-label="Edit user"
+            @click="editUser(rowData)"
+          />
+          <!-- <VaButton
+            preset="primary"
+            size="small"
+            icon="mso-delete"
+            color="danger"
+            aria-label="Delete book"
+            @click="$emit('delete', book as Book)"
+          /> -->
+        </div>
+      </template>
   </VaDataTable>
 
   <div class="flex flex-col-reverse md:flex-row gap-2 justify-between items-center py-2">
@@ -38,13 +58,12 @@
       v-model="doShowUserModal"
       size="small"
       hide-default-actions
-     
     >
-      <h1 class="va-h5 mb-4">Add User</h1>
-      <!-- <h1 v-if="projectToEdit === null" class="va-h5 mb-4">Add project</h1>
-      <h1 v-else class="va-h5 mb-4">Edit project</h1>-->
-      <UserForm ref="userFormRef"  @save="saveUser"/>
-     
+      <h1 v-if="toEditUser == null" class="va-h5 mb-4" >Add User</h1>
+      <h1 v-else class="va-h5 mb-4" >Edit User</h1>
+      <UserForm ref="userFormRef"  
+        :user-info="toEditUser" 
+      />  
     </VaModal>
 </template>
 
@@ -77,6 +96,7 @@ export default {
       currentPage: 1, // Current page number
       itemsPerPage: 10, // Items per page
       doShowUserModal: false,
+      toEditUser: [],
     }
   },
   computed: {
@@ -134,12 +154,17 @@ export default {
       return moment(date).format('DD-MMM-YYYY HH:mm');
     },
     addUser() {
+      this.toEditUser = null,
       this.doShowUserModal = true;
 
     },
     saveUser(userInfo) {
       alert("saveuser" + userInfo)
     },
+    editUser(user){
+      this.toEditUser = user,
+      this.doShowUserModal = true;
+    }
   },
 
   watch: {
